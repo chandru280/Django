@@ -1,0 +1,10 @@
+<html>
+<head>
+    <title>{{ request.user.get_role_display }}</title>
+</head>
+<body>
+    <h1>Welcome,  {{ request.user }} role {{ request.user.get_role_display }}</h1>
+    <p>This is the {{ request.user.get_role_display }} page.</p>
+    <a href="{% url 'logout' %}">Logout</a>
+</body>
+</html>
