@@ -1,0 +1,15 @@
+<html>
+<head>
+    <title>Car</title>
+</head>
+<body>
+    <h2>Car Form</h2>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <a href="{% url 'Manufacturerform' %}">Add Author</a>
+
+        <button type="submit">Submit</button>
+    </form>
+</body>
+</html>

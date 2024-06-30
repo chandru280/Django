@@ -1,0 +1,16 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Model Data</title>
+</head>
+<body>
+    <h1>My Model Data</h1>
+    <ul>
+        {% for instance in my_model_instances %}
+            <li>{{ instance.name }} - {{ instance.slug }}</li>
+            <!-- Add other fields as needed -->
+        {% endfor %}
+    </ul>
+</body>
+</html>

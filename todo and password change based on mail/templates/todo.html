@@ -1,0 +1,58 @@
+<html>
+<head>
+   
+    <title>todo</title>
+</head>
+<body>
+    <h1>Hello {{ request.user }}</h1>
+
+
+
+<form method="POST" >                 
+    {% csrf_token %}
+    <input type="text" name="task" placeholder="Enter a task here"/>
+    <button type="submit" >Add Task</button>
+               
+</form>
+
+
+    <table>
+         <thead>
+              <tr>
+                <th >Todo item</th>
+                <th >Status</th>
+                <th >Actions</th>
+              </tr>
+        </thead>
+        <tbody>
+            {% for i in todos %}
+            <tr>
+                <td>{{i.todo_name}}</td>
+
+                {% if i.status == True %}
+                    <td>Completed</td>
+                {% else %}
+                    <td>In progress</td>
+                {% endif %}
+
+                <td>
+                    <a href="{% url 'delete' i.pk %}"><button type="submit" >Delete</button></a>
+                    <a href="{% url 'update' i.pk %}"><button type="submit" >Finished</button></a>
+                    <a href="{% url 'undo' i.pk %}"><button type="submit" >Undo</button></a>
+                    
+                    
+                </td>
+
+                
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+
+    <p><a href="login/">login</a></p>
+    <p><a href="logout/">logout</a></p>
+    <p><a href="register/">register</a></p>
+        
+  
+</body>

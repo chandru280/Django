@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enter OTP</title>
+</head>
+<body>
+    <h2>Enter OTP</h2>
+    <p id="timer">Time remaining: 2:00</p>  <!-- Display timer here -->
+    <form method="post">
+        {% csrf_token %}
+        <label for="otp">Enter OTP:</label>
+        <input type="text" id="otp" name="otp" required>
+        <button type="submit">Verify OTP</button>
+    </form>
+
+    <script>
+        // Set the expiry time from the server-side variable
+        var expiryTime = new Date("{{ otp_expiry_time }}");
+
+        // Function to update timer
+        function updateTimer() {
+            var now = new Date();
+            var timeDiff = expiryTime - now;
+
+            if (timeDiff <= 0) {
+                document.getElementById('timer').innerHTML = 'OTP expired.';
+                document.getElementById('otp').disabled = true;  // Disable OTP input if expired
+            } else {
+                var minutes = Math.floor((timeDiff % (1000 * 60 * 60)) / (1000 * 60));
+                var seconds = Math.floor((timeDiff % (1000 * 60)) / 1000);
+
+                // Add leading zeros if necessary
+                minutes = minutes < 10 ? '0' + minutes : minutes;
+                seconds = seconds < 10 ? '0' + seconds : seconds;
+
+                document.getElementById('timer').innerHTML = 'Time remaining: ' + minutes + ':' + seconds;
+
+                // Update timer every second
+                setTimeout(updateTimer, 1000);
+            }
+        }
+
+        // Call the updateTimer function initially
+        updateTimer();
+    </script>
+</body>
+</html>

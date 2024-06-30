@@ -1,0 +1,15 @@
+<html>
+<head>
+    <title>User Profile</title>
+</head>
+<body>
+    <h2>User Profile Form</h2>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <a href="{% url 'user' %}">Add User</a>
+
+        <button type="submit">Submit</button>
+    </form>
+</body>
+</html>

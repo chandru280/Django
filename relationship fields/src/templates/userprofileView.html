@@ -1,0 +1,17 @@
+<html>
+<head>
+    <title>User Profiles</title>
+</head>
+<body>
+    <h1>User Profiles</h1>
+    <ul>
+        {% for user_profile in user_profiles %}
+        <li>
+            <p>User: {{ user_profile.name }}</p>
+            <p>Bio: {{ user_profile.bio }}</p>
+            <p>Location: {{ user_profile.location }}</p>
+        </li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

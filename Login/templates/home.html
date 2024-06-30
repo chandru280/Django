@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="en">
+  <head>
+   
+    <title>home page!</title>
+  </head>
+  <body>
+    <p> in this project we using login required function, for this function first import </p>
+    <p>from django.contrib.auth.decorators import login_required </p>
+
+     <p> @login_required,  This is a function include top of the function   </p>
+     <p>And add this line in a setting.py page,       "LOGIN_URL = 'login/' "</p>
+
+    <h1>Hello {{ request.user }}</h1>
+
+    <p><a href="login/">login</a></p>
+    <p><a href="logout/">logout</a></p>
+    <p><a href="register/">register</a></p>
+  </body>
+</html>
+

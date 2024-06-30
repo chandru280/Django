@@ -1,0 +1,24 @@
+<html >
+<head>
+    <title>Index</title>
+</head>
+<body>
+    <h1>Welcome to My Django Relationship Fields!</h1>
+    <h3>One-to-One (OneToOneField):</h3>
+    <p> This type of relationship indicates that each instance of one model corresponds to exactly one instance of another model.</p>
+    <h3>One-to-Many (ForeignKey): </h3>
+    <p>This type of relationship indicates that each instance of one model can be associated with multiple instances of another model. This is achieved by adding a foreign key field to the "many" model, which refers to the "one" model.</p>
+    <h3>Many-to-Many (ManyToManyField): </h3>
+    <p>This type of relationship indicates that each instance of one model can be associated with multiple instances of another model, and vice versa. This is achieved by creating an intermediary table to hold the relationships.</p>
+
+    <ul>
+        <li><a href="{% url 'user_profile' %}">Add User Profile</a></li>
+        <li><a href="{% url 'book' %}">Add Books</a></li>
+        <li><a href="{% url 'car' %}">Add Cars</a></li><br>
+
+        <li><a href="{% url 'user_profile_view' %}">View User Profile</a></li>
+        <li><a href="{% url 'books_view' %}">View Books</a></li>
+        <li><a href="{% url 'cars_view' %}">View Cars</a></li>
+    </ul>
+</body>
+</html>
