@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Detail</title>
+    <!-- CSS and other head elements -->
+</head>
+<body>
+    <h1>{{ student.name }}</h1>
+    <p>Standard: {{ student.standard }}</p>
+    <p>Date of Birth: {{ student.date_of_birth }}</p>
+    <!-- Add other student details as needed -->
+
+    <h2>Test Marks</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Test Name</th>
+                <th>Subject</th>
+                <th>Marks</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for mark in marks %}
+            <tr>
+                <td>{{ mark.test.test_name }}</td>
+                <td>{{ mark.subject.subject }}</td>
+                <td>{{ mark.marks }}</td>
+                <td>
+                    <a href="{% url 'update_mark' mark.id %}" class="btn btn-warning">Edit</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{% url 'create_marks' student.id %}" class="btn btn-primary">Add Mark</a>
+</body>
+</html>

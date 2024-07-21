@@ -1,0 +1,14 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Standard List</title>
+</head>
+<body>
+    <h1>Standard List</h1>
+    <ul>
+        {% for standard in standards %}
+            <li><a href="{% url 'subject_list' standard.id %}">{{ standard.name }}</a></li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

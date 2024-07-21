@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Student List</title>
+</head>
+<body>
+    <h1>Student List</h1>
+    <ul>
+        {% for student in students %}
+            <li><a href="{% url 'student_detail' student.id %}">{{ student.name }}</a> -  <a href="{% url 'create_marks' student.id %}" class="btn btn-primary">Add Mark</a>
+                | <a href="{% url 'update_student' student.id %}">Update</a> | <a href="{% url 'delete_student' student.id %}">Delete</a></li>
+        {% endfor %}
+    </ul>
+    <a href="{% url 'add_student' %}">Add Student</a>
+</body>
+</html>

@@ -1,0 +1,97 @@
+{% comment %} <!-- mark_form.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Create Marks</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('#id_test').change(function() {
+                var url = $("#markForm").attr("data-subjects-url");
+                var testId = $(this).val();
+
+                $.ajax({
+                    url: url,
+                    data: {
+                        'test': testId
+                    },
+                    success: function(data) {
+                        $("#id_subject").html("");
+                        $.each(data, function(key, value) {
+                            $("#id_subject").append('<option value="' + value.id + '">' + value.subject + '</option>');
+                        });
+                    }
+                });
+            });
+        });
+    </script>
+</head>
+<body>
+    <h2>Create Marks</h2>
+    <form method="post" id="markForm" data-subjects-url="{% url 'load_subjects' %}">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Submit</button>
+    </form>
+</body>
+</html> {% endcomment %}
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Create Marks</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('#id_test').change(function() {
+                var url = $("#testForm").attr("data-subjects-url");
+                var testId = $(this).val();
+
+                $.ajax({
+                    url: url,
+                    data: {
+                        'test': testId
+                    },
+                    success: function(data) {
+                        var subjectsContainer = $("#subjects-container");
+                        subjectsContainer.empty();
+                        data.subjects.forEach(function(subject) {
+                            subjectsContainer.append(
+                                '<div>' +
+                                '<label for="id_' + subject.id + '_marks"> ' + subject.subject + '</label>' +
+                                '<input type="number" name="' + subject.id + '-marks" id="id_' + subject.id + '_marks">' +
+                                '</div>'
+                            );
+                        });
+                    }
+                });
+            });
+        });
+    </script>
+</head>
+<body>
+    <h2>Create Marks</h2>
+    <form method="post" id="testForm" data-subjects-url="{% url 'get_subjects' %}">
+        {% csrf_token %}
+        {{ test_form.as_p }}
+        <div id="subjects-container">
+            {% for mark_form in mark_forms %}
+                {{ mark_form.as_p }}
+            {% endfor %}
+        </div>
+        <button type="submit">Submit</button>
+    </form>
+</body>
+</html>

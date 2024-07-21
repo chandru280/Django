@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Manage Marks</title>
+</head>
+<body>
+    <h1>Manage Marks for {{ test.name }}</h1>
+    <form method="post">
+        {% csrf_token %}
+        {{ formset.management_form }}
+        <table>
+            {% for form in formset.forms %}
+                <tr>
+                    <td>{{ form.subjects.value }}</td>  <!-- Display subject name -->
+                    <td>{{ form.marks }}</td>  <!-- Display marks input field -->
+                </tr>
+
+                
+            {% endfor %}
+        </table>
+        <button type="submit">Save</button>
+    </form>
+</body>
+</html>

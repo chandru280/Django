@@ -1,0 +1,6 @@
+{% for subject in subjects %}
+    <div>
+        <label for="id_{{ subject.id }}">{{ subject.subject }}</label>
+        <input type="number" name="{{ subject.id }}-marks" id="id_{{ subject.id }}">
+    </div>
+{% endfor %}

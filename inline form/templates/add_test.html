@@ -1,0 +1,40 @@
+<!-- your_template.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Create Testname with Subjects</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('#add-subject').click(function() {
+                var form_idx = $('#id_testsubject_set-TOTAL_FORMS').val();
+                $('#formset-container').append($('#empty-form').html().replace(/__prefix__/g, form_idx));
+                $('#id_testsubject_set-TOTAL_FORMS').val(parseInt(form_idx) + 1);
+            });
+        });
+    </script>
+</head>
+<body>
+    <h2>Create Testname with Subjects</h2>
+    <form method="post">
+        {% csrf_token %}
+        {{ testname_form.as_p }}
+        <div id="formset-container">
+            {{ formset.management_form }}
+            {% for form in formset %}
+                <div class="form-row">
+                    {{ form.as_p }}
+                </div>
+            {% endfor %}
+        </div>
+        <button type="button" id="add-subject">Add Subject</button>
+        <button type="submit">Submit</button>
+    </form>
+
+    <div id="empty-form" style="display:none;">
+        <div class="form-row">
+            {{ formset.empty_form.as_p }}
+        </div>
+    </div>
+</body>
+</html>

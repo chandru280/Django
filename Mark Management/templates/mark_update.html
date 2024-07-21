@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Update Mark</title>
+    <!-- CSS and other head elements -->
+</head>
+<body>
+    <h1>Update Mark for {{ student.name }} - {{ test.test_name }}</h1>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-success">Save Changes</button>
+        <a href="{% url 'student_detail' student.id %}" class="btn btn-secondary">Cancel</a>
+    </form>
+</body>
+</html>

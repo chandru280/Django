@@ -1,0 +1,15 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Subject List - {{ standard.name }}</title>
+</head>
+<body>
+    <h1>Subject List - For {{ standard.name }} Standard</h1>
+    <ul>
+        {% for subject in subjects %}
+            <li>{{ subject.name }}</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>
+
