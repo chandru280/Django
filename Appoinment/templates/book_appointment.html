@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Add Appointment</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $('#id_doctor, #id_date').change(function() {
+                var doctor_id = $('#id_doctor').val();
+                var date = $('#id_date').val();
+                if (doctor_id && date) {
+                    $.ajax({
+                        url: '{% url "load_time_slots" %}',
+                        data: {
+                            'doctor_id': doctor_id,
+                            'date': date
+                        },
+                        success: function(data) {
+                            var options = '<option value="">Select a time slot</option>';
+                            for (var i = 0; i < data.length; i++) {
+                                var slot = data[i];
+                                options += '<option value="' + slot.id + '">' + slot.start_time + ' - ' + slot.end_time + '</option>';
+                            }
+                            $('#id_available_time_slots').html(options);
+                        }
+                    });
+                } else {
+                    $('#id_available_time_slots').html('<option value="">Select a time slot</option>');
+                }
+            });
+        });
+    </script>
+</head>
+<body>
+    <h1>Add Appointment</h1>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <div>
+            <label for="id_date">Select Date:</label>
+            <input type="date" id="id_date" name="date" required>
+        </div>
+        <button type="submit">Save</button>
+    </form>
+</body>
+</html>

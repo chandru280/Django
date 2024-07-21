@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Available Timeslots</title>
+</head>
+<body>
+    <h1>Available Timeslots</h1>
+    <ul>
+        {% for start, end in timeslots %}
+            <li>{{ start }} - {{ end }}</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

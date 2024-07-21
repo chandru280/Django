@@ -1,0 +1,10 @@
+asgiref==3.8.1
+Babel==2.15.0
+Django==5.0.7
+django-appointment==3.6.0
+django-phonenumber-field==8.0.0
+django-picklefield==3.2
+django-q2==1.6.2
+phonenumbers==8.13.40
+pillow==10.4.0
+sqlparse==0.5.0
