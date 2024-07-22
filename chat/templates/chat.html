@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Chat Room</title>
+</head>
+<body>
+    <h1>Chat Room</h1>
+    <div id="chat">
+        {% for message in messages %}
+            <p><strong>{{ message.user.username }}:</strong> 
+                {% if message.content %}
+                    {{ message.content }}
+                {% endif %}
+                {% if message.attachment %}
+                    <a href="{{ message.attachment.url }}">Download Attachment</a>
+                {% endif %}
+                <em>{{ message.created_on }}</em>
+            </p>
+        {% endfor %}
+    </div>
+    <form method="post" action="{% url 'send_message' %}" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Send</button>
+    </form>
+</body>
+</html>
