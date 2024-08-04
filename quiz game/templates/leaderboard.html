@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Leaderboard</title>
+</head>
+<body>
+    <h1>Leaderboard</h1>
+    <ul>
+        {% for result in results %}
+            <li>{{ result.user.username }} - {{ result.quiz.title }} - {{ result.score }}</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>
