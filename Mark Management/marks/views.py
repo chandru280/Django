@@ -149,7 +149,7 @@ def student_list(request):
 def student_detail(request, student_id):
     student = get_object_or_404(Student, pk=student_id)
     marks = Mark.objects.filter(student=student)
-    last_test = Testname.objects.last()  # Get the last entered test name
+    last_test = Testname.objects.last()  
     
     return render(request, 'student_detail.html', {
         'student': student,
@@ -223,7 +223,7 @@ def create_marks(request, student_id):
     mark_forms = []
 
     student = get_object_or_404(Student, id=student_id)
-    last_test = Testname.objects.last()  # Get the last entered test name
+    last_test = Testname.objects.last()  
 
     if request.method == 'POST':
         print("POST data:", request.POST)

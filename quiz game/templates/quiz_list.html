@@ -5,10 +5,11 @@
 </head>
 <body>
     <h1>Quiz List</h1>
-    <ul>
-        {% for quiz in quizzes %}
-            <li><a href="{% url 'quiz_detail' quiz.id %}">{{ quiz.title }}</a></li>
-        {% endfor %}
-    </ul>
+    {% for quiz in quizzes %}
+    <li>
+        <a href="{% url 'quiz_detail' quiz.id %}">{{ quiz.title }}</a>
+        <a href="{% url 'update_quiz' quiz.id %}" style="margin-left: 10px;">Update</a>
+    </li>
+{% endfor %}
 </body>
 </html>

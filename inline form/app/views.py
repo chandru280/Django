@@ -1,8 +1,9 @@
 from django.forms import inlineformset_factory
 from django.shortcuts import render
 from django.shortcuts import render, redirect
-from .models import Testname
-from .forms import TestnameForm, TestsubjectFormSet
+from .forms import TestnameForm, TestsubjectFormSet, TestSelectionForm, MarkForm, MarkForm2
+from django.http import JsonResponse
+from .models import Testname, Testsubject, Mark
 
 def create_testname_with_subjects(request):
     if request.method == 'POST':
@@ -25,48 +26,6 @@ def create_testname_with_subjects(request):
     })
 
 
-
-# views.py
-# from django.shortcuts import render, redirect
-# from django.http import JsonResponse
-# from .models import Testsubject, Testname
-# from .forms import MarkForm
-
-# def create_mark(request):
-#     if request.method == 'POST':
-#         form = MarkForm(request.POST)
-#         if form.is_valid():
-#             form.save()
-#             return redirect('success_url')  # Replace 'success_url' with your desired success URL
-#     else:
-#         form = MarkForm()
-
-#     return render(request, 'mark_form.html', {'form': form})
-
-# def load_subjects(request):
-#     test_id = request.GET.get('test')
-#     subjects = Testsubject.objects.filter(test_name_id=test_id).all()
-#     return JsonResponse(list(subjects.values('id', 'subject')), safe=False)
-
-
-# views.py
-
-
-
-
-
-
-
-
-
-
-
-
-# views.py
-from django.shortcuts import render, redirect
-from django.http import JsonResponse
-from .models import Testname, Testsubject, Mark
-from .forms import TestSelectionForm, MarkForm
 
 def create_marks(request):
     mark_forms = []
@@ -107,24 +66,6 @@ def get_subjects(request):
     return JsonResponse(data)
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-from django.shortcuts import render, redirect
-from .models import Testname, Mark, Testsubject
-from .forms import MarkFormSet, MarkForm2
 
 def manage_marks(request, test_id):
     test = Testname.objects.get(id=test_id)
