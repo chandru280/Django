@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
+</head>
+<body>
+    <div>
+        <nav>
+            <ul>
+                <li><a href="{% url 'staff_list' %}">Staff</a></li>
+                <li><a href="{% url 'student_list' %}">Students</a></li>
+                <li><a href="{% url 'event_list' %}">Events</a></li>
+                <li><a href="{% url 'logout' %}">Logout</a></li>
+            </ul>
+        </nav>
+        <h1>Welcome, {{ user.username }}!</h1>
+        <p>This is the home page.</p>
+    </div>
+</body>
+</html>
