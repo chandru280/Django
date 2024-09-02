@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Rate {{ product.name }}</title>
+    <style>
+        /* Star rating CSS */
+        .star-rating {
+            direction: rtl;
+            font-size: 2em;
+            unicode-bidi: bidi-override;
+            display: inline-block;
+        }
+
+        .star-rating input {
+            display: none;
+        }
+
+        .star-rating label {
+            color: #ddd;
+            font-size: 2em;
+            padding: 0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .star-rating label:before {
+            content: "\2605";
+            display: inline-block;
+            position: relative;
+            font-size: inherit;
+            color: inherit;
+        }
+
+        .star-rating input:checked ~ label,
+        .star-rating label:hover,
+        .star-rating label:hover ~ label {
+            color: #f2b600;
+        }
+
+        .star-rating input:checked + label:hover,
+        .star-rating input:checked + label:hover ~ label,
+        .star-rating input:checked ~ label:hover,
+        .star-rating input:checked ~ label:hover ~ label,
+        .star-rating label:hover ~ input:checked ~ label {
+            color: #f2b600;
+        }
+    </style>
+</head>
+<body>
+    <h1>Rate {{ product.name }}</h1>
+    <form method="post">
+        {% csrf_token %}
+        
+        <div class="star-rating">
+            {% for i in "54321" %}
+                <input type="radio" id="star{{ i }}" name="rating" value="{{ i }}" {% if form.initial.rating|stringformat:"d" == i %}checked{% endif %}>
+                <label for="star{{ i }}" title="{{ i }} stars">&#9733;</label>
+            {% endfor %}
+        </div>
+
+        <br><br>
+        
+        {{ form.description.label_tag }}<br>
+        {{ form.description }}
+        
+        <br><br>
+        
+        <button type="submit">Submit Rating</button>
+    </form>
+
+    <p><a href="{% url 'product_detail' product.pk %}">Back to Product</a></p>
+</body>
+</html>

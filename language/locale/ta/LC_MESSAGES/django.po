@@ -1,0 +1,8 @@
+msgid "Welcome"
+msgstr "வரவேற்கிறோம்"
+
+msgid "Hello, World!"
+msgstr "ஹலோ, உலகம்!"
+
+msgid "This is a sample Django localization example."
+msgstr "இது ஒரு ட்ஜாங்கோ உள்ளூர் சோதனை எடுத்துக்காட்டு."
