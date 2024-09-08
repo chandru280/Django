@@ -1,8 +1,0 @@
-msgid "Welcome"
-msgstr "Bienvenido"
-
-msgid "Hello, World!"
-msgstr "Hola, Mundo!"
-
-msgid "This is a sample Django localization example."
-msgstr "Este es un ejemplo de localización de Django."

@@ -1,0 +1,12 @@
+XXXX XXXXXXXXXXXXXXXXXXXX XXX
+XXXXXXXXX XXXXX
+XXXXX XXXXXXXXXX
+XXXXXX
+    XXXXX XXXXXXXXXXXXXXXX
+    XXXXXXX gettext(u'Welcome') XXXXXXXX
+XXXXXXX
+XXXXXX
+    XXXX gettext(u'Hello, World!') XXXXX
+    XXX gettext(u'This is a sample Django localization example.') XXXX
+XXXXXXX
+XXXXXXX
