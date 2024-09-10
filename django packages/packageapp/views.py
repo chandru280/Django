@@ -18,18 +18,3 @@ def person_list_view(request):
     return render(request, 'personal_list.html', {'table': table})
 
 
-
-# views.py
-from django_tables2 import SingleTableView
-from .models import Person
-from .tables import PersonTable
-
-class PersonListView(SingleTableView):
-    model = Person  # The model from which the data is fetched
-    table_class = PersonTable  # The table class to be used
-    template_name = 'personal_list.html'  # The template to render
-    paginate_by = 10  # Pagination: 10 records per page
-
-    # Optionally, if you need to override the default queryset:
-    # def get_queryset(self):
-    #     return Person.objects.filter(active=True)  # Add any custom filtering

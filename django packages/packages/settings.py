@@ -40,6 +40,7 @@ INSTALLED_APPS = [
 
 
     'packageapp',
+    'packageclassbased',
     'django_tables2',
 ]
 
