@@ -1,8 +1,15 @@
 from django.urls import path 
 from marks import views
-
+from django.views.generic import TemplateView 
 
 urlpatterns = [
+
+    path('', TemplateView.as_view(template_name='home.html'), name='home'),
+
+    path('login/', views.user_login, name='login'),
+    path('logout/', views.user_logout, name='logout'),
+    path('register/', views.register, name='register'),
+
 
     path('add_standard_subject_form',views.add_standart_with_subject, name = 'add_standard_subject_form'),
 
@@ -33,4 +40,6 @@ urlpatterns = [
     path('ajax/get-subjects/', views.get_subjects, name='get_subjects'),
     path('update_mark/<int:mark_id>/', views.update_mark, name='update_mark'),
 
+    path('manage-permissions/', views.manage_user_permissions, name='manage_user_permissions'),
+   
     ]

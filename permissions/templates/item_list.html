@@ -1,0 +1,17 @@
+<h1>Item List</h1>
+{% if user.has_perm('myapp.add_item') %}
+    <a href="{% url 'item_create' %}">Create new item</a>
+{% endif %}
+<ul>
+    {% for item in items %}
+        <li>
+            <a href="{% url 'item_detail' item.pk %}">{{ item.name }}</a>
+            {% if user.has_perm('myapp.change_item') %}
+                <a href="{% url 'item_update' item.pk %}">Edit</a>
+            {% endif %}
+            {% if user.has_perm('myapp.delete_item') %}
+                <a href="{% url 'item_delete' item.pk %}">Delete</a>
+            {% endif %}
+        </li>
+    {% endfor %}
+</ul>

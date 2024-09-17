@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Manage User Permissions</title>
+</head>
+<body>
+    <h2>Manage User Permissions</h2>
+    <form method="post">
+        {% csrf_token %}
+        <table border="1">
+            <thead>
+                <tr>
+                    <th>User</th>
+                    <th>Can Add</th>
+                    <th>Can Update</th>
+                    <th>Can Delete</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for user in users %}
+                    <tr>
+                        <td>{{ user.username }}</td>
+                        <td>
+                            <input type="checkbox" name="user_{{ user.id }}_can_add" {% if user.can_add %}checked{% endif %}>
+                        </td>
+                        <td>
+                            <input type="checkbox" name="user_{{ user.id }}_can_update" {% if user.can_update %}checked{% endif %}>
+                        </td>
+                        <td>
+                            <input type="checkbox" name="user_{{ user.id }}_can_delete" {% if user.can_delete %}checked{% endif %}>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <button type="submit">Save Changes</button>
+    </form>
+</body>
+</html>

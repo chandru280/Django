@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
+</head>
+<body>
+    <h1>Welcome to the Marks Management System</h1>
+    
+
+
+    {% if user.is_authenticated %}
+    <li><a href="{% url 'logout' %}">logout </a></li>
+    <li><a href="{% url 'manage_user_permissions' %}">Permissions </a></li>
+
+            <h2>Hello, {{ user.username }}!</h2>
+            <p>Welcome back to your dashboard. You can change your password, update your email, or log out using the links above.</p>
+
+            <section>
+                <h3>Your Dashboard</h3>
+                <p>Here you can add content specific to the logged-in user's dashboard.</p>
+            </section>
+            {% else %}
+    <li><a href="{% url 'login' %}">login </a></li>
+    {% endif %}
+
+    <ul>
+        <li><a href="{% url 'add_standard_subject_form' %}">Add Standard with Subject</a></li>
+        <li><a href="{% url 'standard_list' %}">Standard List</a></li>
+        <li><a href="{% url 'create_testname_with_subjects' %}">Create Test Name with Subjects</a></li>
+        <li><a href="{% url 'student_list' %}">Student List</a></li>
+        <li><a href="{% url 'add_student' %}">Add Student</a></li>
+        <li><a href="{% url 'staff_list' %}">Staff List</a></li>
+        <li><a href="{% url 'staff_add' %}">Add Staff</a></li>
+    </ul>
+</body>
+</html>

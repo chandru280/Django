@@ -7,22 +7,9 @@ from django.contrib.auth.decorators import login_required
 from marks.forms import MarkForm, Registrationform, StaffForm, StandardForm, StudentForm, SubjectFormSet, TestSelectionForm, TestnameForm, TestsubjectFormSet
 from marks.models import Mark, Staff, Standard, Student, Testname, Testsubject, UserForm
 
-
-
-def generate_registration_id():
-    latest_registration = UserForm.objects.order_by('-id').first()
-    if latest_registration and latest_registration.id:
-        registration_id = latest_registration.id + 1
-
-    else:
-        registration_id = 1
-    
-    while UserForm.objects.filter(id=registration_id).exists():
-        registration_id += 1
-    
-    return registration_id
-
-
+# from .decorators import admin_required 
+from .decorators import can_add_required, can_update_required, can_delete_required
+from django.http import HttpResponseForbidden
 
 def register(request):
     if request.method == 'POST':
@@ -30,7 +17,7 @@ def register(request):
         if form.is_valid():
             try:
                 user = form.save(commit=False)
-                user.id = generate_registration_id()
+                
                 user.save()
            
                 
@@ -66,8 +53,25 @@ def user_logout(request):
 
 
 
+@login_required
+def manage_user_permissions(request):
+    if not request.user.is_superuser:
+        return HttpResponseForbidden("You do not have permission to access this page.")
+    elif request.method == 'POST':
+        for user in UserForm.objects.all():
+            user.can_add = f'user_{user.id}_can_add' in request.POST
+            user.can_update = f'user_{user.id}_can_update' in request.POST
+            user.can_delete = f'user_{user.id}_can_delete' in request.POST
+            user.save()
+
+        return redirect('manage_user_permissions')
+    
+    users = UserForm.objects.all()
+    return render(request, 'manage_user_permissions.html', {'users': users})
 
 
+# @admin_required
+@can_add_required
 def add_standart_with_subject(request):
     
     if request.method == 'POST':
@@ -281,3 +285,11 @@ def update_mark(request, mark_id):
         'student': student,
         'test': test,
     })
+
+
+
+
+
+
+
+

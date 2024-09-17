@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="login-form">
+  <h2>Login to your account</h2>
+  
+  <form method="POST" action="{% url 'account_login' %}">
+      {% csrf_token %}
+      {{ form.as_p }} <!-- This renders the login fields from the LoginForm -->
+
+      <div class="form-check">
+          <input class="form-check-input" type="checkbox" id="remember_me" name="remember_me">
+          <label class="form-check-label" for="remember_me">Remember Me</label>
+      </div>
+
+      <button type="submit" class="btn btn-primary">Log in</button>
+  </form>
+
+  <p>Don't have an account? <a href="{% url 'account_signup' %}">Sign up</a></p>
+</div>
+
+{% endblock %}

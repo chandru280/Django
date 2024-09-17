@@ -17,7 +17,14 @@ class UserForm(AbstractUser):
     email = models.EmailField(unique=True, null=True, blank=True)
     name = models.CharField(max_length=50, null=True, blank=True)
     image = models.ImageField(default='default.jpg', upload_to='profile')
-  
+    
+
+      
+    # Permission fields
+    can_add = models.BooleanField(default=False)
+    can_update = models.BooleanField(default=False)
+    can_delete = models.BooleanField(default=False)
+
     USERNAME_FIELD = 'username'
     REQUIRED_FIELDS = ['role']
 
@@ -91,7 +98,7 @@ class Staff(models.Model):
 
 class Testname(models.Model):
     test_name = models.CharField(max_length=100)
-    standard = models.CharField(max_length=100)
+    standard = models.ForeignKey(Standard, on_delete=models.CASCADE, null=True, blank=True)
 
     def __str__(self):
         return self.test_name
@@ -112,4 +119,6 @@ class Mark(models.Model):
     def __str__(self):
         return f"{self.student.name} - {self.subject} - {self.marks}"
     
+
+
 

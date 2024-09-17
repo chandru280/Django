@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home Page</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1CmrxMRARb6aLqgBO7Z1Ln3NzTz0JgZnK96pHraLfdr7y6jMR0ksm8FxEdN5gE1r" crossorigin="anonymous">
+</head>
+<body>
+
+    <header>
+        <h1>Welcome to Our Website</h1>
+
+        <!-- Show different links based on whether the user is logged in or not -->
+        <nav>
+            <ul>
+                {% if user.is_authenticated %}
+                    <li><a href="{% url 'account_logout' %}">Logout</a></li>
+                    <li><a href="{% url 'password_change' %}">Change Password</a></li>
+                    <li><a href="{% url 'change_email' %}">Change Email</a></li>
+                {% else %}
+                    <li><a href="{% url 'account_login' %}">Login</a></li>
+                    <li><a href="{% url 'account_signup' %}">Signup</a></li>
+                {% endif %}
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <!-- Show personalized greeting if user is logged in -->
+        {% if user.is_authenticated %}
+            <h2>Hello, {{ user.username }}!</h2>
+            <p>Welcome back to your dashboard. You can change your password, update your email, or log out using the links above.</p>
+
+            <section>
+                <h3>Your Dashboard</h3>
+                <p>Here you can add content specific to the logged-in user's dashboard.</p>
+            </section>
+        {% else %}
+            <!-- Show a welcome message if the user is not logged in -->
+            <h2>Welcome to Our Platform</h2>
+            <p>Please login or sign up to access exclusive features and content.</p>
+
+            <section>
+                <h3>Why Join Us?</h3>
+                <ul>
+                    <li>Access personalized content</li>
+                    <li>Manage your account details</li>
+                    <li>Exclusive offers for members</li>
+                </ul>
+            </section>
+        {% endif %}
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Our Website. All rights reserved.</p>
+    </footer>
+
+</body>
+</html>
