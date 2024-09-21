@@ -283,39 +283,49 @@ def staff_delete(request, staff_id):
 
 def create_marks(request, student_id):
     mark_forms = []
-
     student = get_object_or_404(Student, id=student_id)
-    last_test = Testname.objects.last()  
+    last_test = Testname.objects.last()
 
     if request.method == 'POST':
-        print("POST data:", request.POST)
         test_form = TestSelectionForm(request.POST)
         if test_form.is_valid():
             student = test_form.cleaned_data['student']
             test = test_form.cleaned_data['test']
             subjects = Testsubject.objects.filter(test_name=test)
-            mark_forms = [MarkForm(request.POST, prefix=str(subject.id), subject_name=subject.subject) for subject in subjects]
-            if all([mf.is_valid() for mf in mark_forms]):
+
+            for subject in subjects:
+                total_mark = subject.total_mark
+                pass_mark = subject.pass_mark
+                mark_form = MarkForm(request.POST, prefix=str(subject.id), subject=subject)
+                mark_form.initial['total_mark'] = total_mark
+                mark_form.initial['pass_mark'] = pass_mark
+                mark_forms.append(mark_form)
+
+            if all(mf.is_valid() for mf in mark_forms):
                 for mf in mark_forms:
                     mark = mf.save(commit=False)
                     mark.student = student
                     mark.test = test
-                    mark.subject_id = int(mf.prefix)
+                    mark.subject = Testsubject.objects.get(id=int(mf.prefix))  # Ensure correct subject reference
+                    mark.status = mf.initial.get('status')  # Get the status from the initial data
                     mark.save()
-                return redirect('success_url') 
+                return redirect('success_url')
             else:
                 print("Mark forms errors:", [mf.errors for mf in mark_forms])
         else:
             print("Test form errors:", test_form.errors)
     else:
-        test_form = TestSelectionForm(initial={'student': student, 'test': last_test})
+        test_form = TestSelectionForm(initial={'student': student, 'test': last_test}, student=student)
         subjects = Testsubject.objects.filter(test_name=last_test)
-        mark_forms = [MarkForm(prefix=str(subject.id), subject_name=subject.subject) for subject in subjects]
-
+        mark_forms = [MarkForm(prefix=str(subject.id), subject=subject) for subject in subjects]
+        # test_form = TestSelectionForm(student=student) 
     return render(request, 'mark_form.html', {
         'test_form': test_form,
         'mark_forms': mark_forms,
     })
+
+
+
 
 def get_subjects(request):
     test_id = request.GET.get('test')
@@ -330,19 +340,29 @@ def update_mark(request, mark_id):
     student = mark.student
     test = mark.test
 
+    # Get the corresponding Testsubject instance
+    test_subject = mark.subject
+
     if request.method == 'POST':
         form = MarkForm(request.POST, instance=mark)
         if form.is_valid():
             form.save()
             return redirect('student_detail', student_id=student.id)
+        else:
+            print(form.errors)  # Print any validation errors
     else:
-        form = MarkForm(instance=mark, subject_name=mark.subject.subject)
+        # Pass the total_mark and pass_mark from the Testsubject instance
+        form = MarkForm(instance=mark, subject=test_subject, initial={
+            'total_mark': test_subject.total_mark,
+            'pass_mark': test_subject.pass_mark
+        })
 
     return render(request, 'mark_update.html', {
         'form': form,
         'student': student,
         'test': test,
     })
+
 
 
 

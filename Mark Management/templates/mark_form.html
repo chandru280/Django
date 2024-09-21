@@ -1,53 +1,3 @@
-{% comment %} <!-- mark_form.html -->
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Create Marks</title>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script>
-        $(document).ready(function() {
-            $('#id_test').change(function() {
-                var url = $("#markForm").attr("data-subjects-url");
-                var testId = $(this).val();
-
-                $.ajax({
-                    url: url,
-                    data: {
-                        'test': testId
-                    },
-                    success: function(data) {
-                        $("#id_subject").html("");
-                        $.each(data, function(key, value) {
-                            $("#id_subject").append('<option value="' + value.id + '">' + value.subject + '</option>');
-                        });
-                    }
-                });
-            });
-        });
-    </script>
-</head>
-<body>
-    <h2>Create Marks</h2>
-    <form method="post" id="markForm" data-subjects-url="{% url 'load_subjects' %}">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Submit</button>
-    </form>
-</body>
-</html> {% endcomment %}
-
-
-
-
-
-
-
-
-
-
-
-
-
 <!DOCTYPE html>
 <html>
 <head>
@@ -85,12 +35,32 @@
     <h2>Create Marks</h2>
     <form method="post" id="testForm" data-subjects-url="{% url 'get_subjects' %}">
         {% csrf_token %}
-        {{ test_form.as_p }}
+        
+        <div>
+            <label for="{{ test_form.student.id_for_label }}">Select Student:</label>
+            {{ test_form.student }}
+        </div>
+        
+        <div>
+            <label for="{{ test_form.test.id_for_label }}">Select Test:</label>
+            {{ test_form.test }}
+        </div>
+
         <div id="subjects-container">
             {% for mark_form in mark_forms %}
-                {{ mark_form.as_p }}
+                <div class="mark-form">
+                    <div>
+                        <label for="{{ mark_form.prefix }}-marks">Enter marks for {{ mark_form.initial.subject_name }}:</label>
+                        {{ mark_form.marks }}  <!-- Display the marks field -->
+                        {% for error in mark_form.marks.errors %}
+                            <div class="error">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+                    
+                </div>
             {% endfor %}
         </div>
+        
         <button type="submit">Submit</button>
     </form>
 </body>

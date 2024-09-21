@@ -41,6 +41,7 @@ urlpatterns = [
     path('create_marks/<int:student_id>/', views.create_marks, name='create_marks'),
     path('ajax/get-subjects/', views.get_subjects, name='get_subjects'),
     path('update_mark/<int:mark_id>/', views.update_mark, name='update_mark'),
+    
 
     path('manage-permissions/', views.manage_user_permissions, name='manage_user_permissions'),
    

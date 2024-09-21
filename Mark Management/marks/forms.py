@@ -86,12 +86,16 @@ class TestSelectionForm(forms.Form):
     test = forms.ModelChoiceField(queryset=Testname.objects.all(), label="Select Test")
 
     def __init__(self, *args, **kwargs):
-        initial = kwargs.get('initial', {})
+        student = kwargs.pop('student', None)
         super(TestSelectionForm, self).__init__(*args, **kwargs)
-        if 'student' in initial:
-            self.fields['student'].initial = initial['student']
-        if 'test' in initial:
-            self.fields['test'].initial = initial['test']
+        if student:
+            self.fields['student'].initial = student
+
+        # Exclude already saved tests for the selected student
+        if student:
+            saved_tests = Mark.objects.filter(student=student).values_list('test', flat=True)
+            self.fields['test'].queryset = Testname.objects.exclude(id__in=saved_tests)
+
 
 class MarkForm(forms.ModelForm):
     class Meta:
@@ -99,9 +103,28 @@ class MarkForm(forms.ModelForm):
         fields = ['marks']
 
     def __init__(self, *args, **kwargs):
-        subject_name = kwargs.pop('subject_name', None)
+        subject = kwargs.pop('subject', None)
         super(MarkForm, self).__init__(*args, **kwargs)
-        if subject_name:
-            self.fields['marks'].label = f'Enter marks for {subject_name}'
+        if subject:
+            self.fields['marks'].label = f'Enter marks for {subject.subject}'
 
-
+    def clean_marks(self):
+        marks = self.cleaned_data.get('marks')
+        total_mark = self.initial.get('total_mark')
+        pass_mark = self.initial.get('pass_mark')
+    
+        print(f'Marks: {marks}, Total Mark: {total_mark}, Pass Mark: {pass_mark}')  # Debugging
+    
+        if marks is not None and total_mark is not None:
+            if marks > total_mark:
+                raise forms.ValidationError(f'Enter a valid mark, it cannot be greater than the total mark {total_mark}.')
+        
+        if marks is not None and pass_mark is not None:
+            status = 'Pass' if marks >= pass_mark else 'Fail'
+            self.initial['status'] = status   
+    
+        return marks
+    
+    
+    
+    

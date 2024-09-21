@@ -119,6 +119,7 @@ class Mark(models.Model):
     test = models.ForeignKey(Testname, on_delete=models.CASCADE)
     subject = models.ForeignKey(Testsubject, on_delete=models.CASCADE)
     marks = models.PositiveIntegerField()
+    status = models.CharField(max_length=10, choices=[('Pass', 'Pass'), ('Fail', 'Fail')], null=True)
 
     def __str__(self):
         return f"{self.student.name} - {self.subject} - {self.marks}"
