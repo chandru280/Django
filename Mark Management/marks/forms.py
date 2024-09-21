@@ -59,7 +59,7 @@ class TestnameForm(forms.ModelForm):
 TestsubjectFormSet = inlineformset_factory(
     Testname,
     Testsubject,
-    fields=('subject',),
+    fields=('subject', 'total_mark', 'pass_mark'),
     extra=1,
     can_delete=True
 )

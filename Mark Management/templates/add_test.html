@@ -1,9 +1,36 @@
+<!DOCTYPE html>
 <html>
 <head>
     <title>Create Testname with Subjects</title>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         $(document).ready(function() {
+            $('#id_standard').change(function() {
+                var standardId = $(this).val();
+                if (standardId) {
+                    $.ajax({
+                        url: '{% url "fetch_subjects" %}',
+                        data: {
+                            'standard_id': standardId
+                        },
+                        success: function(data) {
+                            $('.subject-select').each(function() {
+                                $(this).empty();
+                                $(this).append('<option value="">Select Subject</option>');
+                                $.each(data, function(key, subject) {
+                                    $(this).append('<option value="' + subject.id + '">' + subject.name + '</option>');
+                                }.bind(this));
+                            });
+                        }
+                    });
+                } else {
+                    $('.subject-select').each(function() {
+                        $(this).empty();
+                        $(this).append('<option value="">Select Subject</option>');
+                    });
+                }
+            });
+
             $('#add-subject').click(function() {
                 var form_idx = $('#id_testsubject_set-TOTAL_FORMS').val();
                 $('#formset-container').append($('#empty-form').html().replace(/__prefix__/g, form_idx));
@@ -14,25 +41,88 @@
 </head>
 <body>
     <h2>Create Testname with Subjects</h2>
+
     <form method="post">
         {% csrf_token %}
-        {{ testname_form.as_p }}
+        
+        <div>
+            <label for="{{ testname_form.standard.id_for_label }}">Standard:</label>
+            {{ testname_form.standard }}
+            {% for error in testname_form.standard.errors %}
+                <div class="error">{{ error }}</div>
+            {% endfor %}
+        </div>
+
+        <div>
+            <label for="{{ testname_form.test_name.id_for_label }}">Test Name:</label>
+            {{ testname_form.test_name }}
+            {% for error in testname_form.test_name.errors %}
+                <div class="error">{{ error }}</div>
+            {% endfor %}
+        </div>
+
         <div id="formset-container">
             {{ formset.management_form }}
+        
             {% for form in formset %}
                 <div class="form-row">
-                    {{ form.as_p }}
+                    <label for="{{ form.subject.id_for_label }}">Subject:</label>
+                    <select class="subject-select" name="testsubject_set-{{ forloop.counter0 }}-subject" id="{{ form.subject.id_for_label }}">
+                        <option value="">Select Subject</option>
+                        {% for subject in form.fields.subject.queryset %}
+                            <option value="{{ subject.id }}" {% if form.subject.value == subject.id %}selected{% endif %}>{{ subject.name }}</option>
+                        {% endfor %}
+                    </select>
+                    {% for error in form.subject.errors %}
+                        <div class="error">{{ error }}</div>
+                    {% endfor %}
+        
+                    <label for="{{ form.total_mark.id_for_label }}">Total Mark:</label>
+                    {{ form.total_mark }}
+                    {% for error in form.total_mark.errors %}
+                        <div class="error">{{ error }}</div>
+                    {% endfor %}
+        
+                    <label for="{{ form.pass_mark.id_for_label }}">Pass Mark:</label>
+                    {{ form.pass_mark }}
+                    {% for error in form.pass_mark.errors %}
+                        <div class="error">{{ error }}</div>
+                    {% endfor %}
                 </div>
             {% endfor %}
         </div>
+        
+
         <button type="button" id="add-subject">Add Subject</button>
         <button type="submit">Submit</button>
     </form>
 
     <div id="empty-form" style="display:none;">
         <div class="form-row">
-            {{ formset.empty_form.as_p }}
+            <label for="id_testsubject_set-__prefix__-subject">Subject:</label>
+            <select class="subject-select" name="testsubject_set-__prefix__-subject" id="id_testsubject_set-__prefix__-subject">
+                <option value="">Select Subject</option>
+                {% for subject in formset.empty_form.fields.subject.queryset %}
+                    <option value="{{ subject.id }}">{{ subject.name }}</option>
+                {% endfor %}
+            </select>
+            {% for error in formset.empty_form.subject.errors %}
+                <div class="error">{{ error }}</div>
+            {% endfor %}
+
+            <label for="id_testsubject_set-__prefix__-total_mark">Total Mark:</label>
+            {{ form.total_mark }}
+            {% for error in formset.empty_form.total_mark.errors %}
+                <div class="error">{{ error }}</div>
+            {% endfor %}
+
+            <label for="id_testsubject_set-__prefix__-pass_mark">Pass Mark:</label>
+            {{ form.pass_mark }}
+            {% for error in formset.empty_form.pass_mark.errors %}
+                <div class="error">{{ error }}</div>
+            {% endfor %}
         </div>
     </div>
+
 </body>
 </html>

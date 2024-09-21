@@ -14,6 +14,7 @@
                     <th>Can Add</th>
                     <th>Can Update</th>
                     <th>Can Delete</th>
+                    <th>Can Save</th>
                 </tr>
             </thead>
             <tbody>
@@ -29,11 +30,18 @@
                         <td>
                             <input type="checkbox" name="user_{{ user.id }}_can_delete" {% if user.can_delete %}checked{% endif %}>
                         </td>
+
+                        <td>
+                            <button type="submit">Save Changes</button>
+
+                        </td>
+                        
+
                     </tr>
+
                 {% endfor %}
             </tbody>
         </table>
-        <button type="submit">Save Changes</button>
     </form>
 </body>
 </html>

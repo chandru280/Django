@@ -105,9 +105,13 @@ class Testname(models.Model):
 
 class Testsubject(models.Model):
     test_name = models.ForeignKey(Testname, on_delete=models.CASCADE)
-    subject = models.CharField(max_length=100)
+    subject = models.ForeignKey(Subject, on_delete=models.CASCADE)
+    total_mark = models.IntegerField(null=True, blank=True)
+    pass_mark = models.IntegerField(null=True, blank=True)
+
     def __str__(self):
-        return f"  {self.test_name} in {self.subject}"
+        return f"{self.test_name} in {self.subject}"
+
 
 
 class Mark(models.Model):

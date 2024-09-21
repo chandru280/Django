@@ -5,11 +5,16 @@ from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from marks.forms import MarkForm, Registrationform, StaffForm, StandardForm, StudentForm, SubjectFormSet, TestSelectionForm, TestnameForm, TestsubjectFormSet
-from marks.models import Mark, Staff, Standard, Student, Testname, Testsubject, UserForm
+from marks.models import Mark, Staff, Standard, Student, Subject, Testname, Testsubject, UserForm
 
 # from .decorators import admin_required 
 from .decorators import can_add_required, can_update_required, can_delete_required
 from django.http import HttpResponseForbidden
+from django.contrib.auth.hashers import make_password
+
+from django.contrib import messages
+
+
 
 def register(request):
     if request.method == 'POST':
@@ -23,6 +28,7 @@ def register(request):
                 
                 return redirect('login')
             except IntegrityError as e:
+                    
                     error_message = "Error: " + str(e)
                     return render(request, 'signup.html', {'form': form, 'error_message': error_message})
 
@@ -31,21 +37,40 @@ def register(request):
     return render(request, 'signup.html', {'form': form})
 
 
+ 
+
 def user_login(request):
+    if request.user.is_authenticated:
+        return render(request, 'login.html', {'already_logged_in': True})
+
     if request.method == 'POST':
-       
         username = request.POST.get('username')
         password = request.POST.get('password')
+        next_url = request.POST.get('next', 'home')   
+        
         user = authenticate(request, username=username, password=password)
         if user is not None:
             login(request, user)
-            return redirect('home')  
+            messages.success(request, 'Login successful')
+            
+            if user.role == 'ADMIN':
+                return redirect('home')   
+            elif user.role == 'STAFF':
+                return redirect('home')   
+            elif user.role == 'STUDENT':
+                student = get_object_or_404(Student, roll_number=user)
+                return redirect('student_detail', student_id=student.id)
+            else:
+                return redirect(next_url)   
         else:
-            return render(request, 'login.html', {'error_message': 'Invalid username or password.'})
-   
-    return render(request, 'login.html')
-
-
+            messages.error(request, 'Invalid username or password')
+            return render(request, 'login.html', {
+                'error_message': 'Invalid username or password.',
+                'next': next_url   
+            })
+    
+    next_url = request.GET.get('next', '')  
+    return render(request, 'login.html', {'next': next_url})
 @login_required
 def user_logout(request):
     logout(request)
@@ -71,27 +96,40 @@ def manage_user_permissions(request):
 
 
 # @admin_required
-@can_add_required
-def add_standart_with_subject(request):
-    
+# @can_add_required
+def add_or_update_standard(request, standard_id=None):
+    if standard_id:
+        standard = get_object_or_404(Standard, id=standard_id)
+    else:
+        standard = None  
+
     if request.method == 'POST':
-        standard_form = StandardForm(request.POST)
-        formset = SubjectFormSet(request.POST)
+        standard_form = StandardForm(request.POST, instance=standard)
+        formset = SubjectFormSet(request.POST, instance=standard)
         if standard_form.is_valid() and formset.is_valid():
             standard = standard_form.save()
             subjects = formset.save(commit=False)
             for subject in subjects:
                 subject.standard = standard
                 subject.save()
-            return redirect('standard_list')  
+            formset.save_m2m()   
+            return redirect('standard_list')   
     else:
-        standard_form = StandardForm()
-        formset = SubjectFormSet()
+        standard_form = StandardForm(instance=standard)
+        formset = SubjectFormSet(instance=standard)
 
     return render(request, 'add_standart_with_subject.html', {
         'standard_form': standard_form,
         'formset': formset,
+        'standard_id': standard_id,
     })
+
+def delete_standard(request, standard_id):
+    standard = get_object_or_404(Standard, id=standard_id)
+    if request.method == 'POST':
+        standard.delete() 
+        return redirect('standard_list')  
+    return redirect('standard_list')  
 
 
 
@@ -105,7 +143,13 @@ def subject_list(request, standard_id):
     subjects = standard.subject_set.all()
     return render(request, 'subject_list.html', {'standard': standard, 'subjects': subjects})
 
-
+def delete_subject(request, subject_id):
+    subject = get_object_or_404(Subject, id=subject_id)
+    if request.method == 'POST':
+        standard_id = subject.standard.id  
+        subject.delete() 
+        return redirect('subject_list', standard_id=standard_id)   
+    return redirect('subject_list', standard_id=subject.standard.id)  
 
 
 def create_testname_with_subjects(request):
@@ -118,28 +162,42 @@ def create_testname_with_subjects(request):
             for testsubject in testsubjects:
                 testsubject.test_name = testname
                 testsubject.save()
-            return redirect('create_testname_with_subjects')  
+            return redirect('create_testname_with_subjects')
     else:
         testname_form = TestnameForm()
         formset = TestsubjectFormSet()
-    
+
     return render(request, 'add_test.html', {
         'testname_form': testname_form,
         'formset': formset,
     })
 
+def fetch_subjects(request):
+    standard_id = request.GET.get('standard_id')
+    subjects = Subject.objects.filter(standard_id=standard_id).values('id', 'name')
+    print(standard_id)
+    print(subjects)
+    print('---------------------------------------------------------')
+    return JsonResponse(list(subjects), safe=False)
 
 
 
 
-
-
-
-def add_student(request):
+def add_student(request): 
     if request.method == 'POST':
         form = StudentForm(request.POST)
-        if form.is_valid():
-            form.save()
+        if form.is_valid(): 
+            student = form.save()
+            
+            user = UserForm(
+                username=student.roll_number,
+                password=make_password(student.date_of_birth.strftime('%Y-%m-%d')),   
+                role='STUDENT',
+                email=student.email,
+                name=student.name,
+            )
+            user.save()
+            
             return redirect('student_list')
     else:
         form = StudentForm()
@@ -285,6 +343,20 @@ def update_mark(request, mark_id):
         'student': student,
         'test': test,
     })
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

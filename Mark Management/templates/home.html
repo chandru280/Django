@@ -9,6 +9,42 @@
     <h1>Welcome to the Marks Management System</h1>
     
 
+    {% if messages %}
+    {% for message in messages %}
+    {% if message.tags == 'success' %}
+
+    <script>
+
+        Swal.fire({
+            position: "center",
+            width: 600,
+            icon: "success",
+            title: `{{ message }}`,
+            showConfirmButton: false,
+            timer: 3000,
+
+        });
+    </script>
+    {% elif message.tags == 'error' %}
+    <script>
+
+        Swal.fire({
+            position: "center",
+            width: 600,
+            icon: "error",
+            title: `{{ message }}`,
+            showConfirmButton: false,
+            timer: 3000,
+
+        });
+
+    </script>
+    {% endif %}
+    {% endfor %}
+    {% endif %}
+
+
+
 
     {% if user.is_authenticated %}
     <li><a href="{% url 'logout' %}">logout </a></li>
@@ -26,7 +62,7 @@
     {% endif %}
 
     <ul>
-        <li><a href="{% url 'add_standard_subject_form' %}">Add Standard with Subject</a></li>
+        <li><a href="{% url 'create_standard' %}">Add Standard with Subject</a></li>
         <li><a href="{% url 'standard_list' %}">Standard List</a></li>
         <li><a href="{% url 'create_testname_with_subjects' %}">Create Test Name with Subjects</a></li>
         <li><a href="{% url 'student_list' %}">Student List</a></li>
