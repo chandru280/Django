@@ -97,6 +97,10 @@ class TestSelectionForm(forms.Form):
             self.fields['test'].queryset = Testname.objects.exclude(id__in=saved_tests)
 
 
+
+
+
+
 class MarkForm(forms.ModelForm):
     class Meta:
         model = Mark
@@ -128,3 +132,31 @@ class MarkForm(forms.ModelForm):
     
     
     
+    
+    
+
+
+class MarkFormupdate(forms.ModelForm):
+    class Meta:
+        model = Mark
+        fields = ['marks']  
+    def __init__(self, *args, **kwargs):
+        self.total_mark = kwargs.pop('total_mark', None)
+        self.pass_mark = kwargs.pop('pass_mark', None)
+        super(MarkFormupdate, self).__init__(*args, **kwargs)
+
+    def clean_marks(self):
+        marks = self.cleaned_data.get('marks')
+        total_mark = self.total_mark   
+        pass_mark = self.pass_mark     
+
+        
+        if marks is not None and total_mark is not None:
+            if marks > total_mark:
+                raise forms.ValidationError(f'Enter a valid mark, it cannot be greater than the total mark {total_mark}.')
+        
+        if marks is not None and pass_mark is not None:
+            status = 'Pass' if marks >= pass_mark else 'Fail'
+            self.initial['status'] = status 
+    
+        return marks

@@ -4,7 +4,7 @@ from django.db import IntegrityError
 from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
-from marks.forms import MarkForm, Registrationform, StaffForm, StandardForm, StudentForm, SubjectFormSet, TestSelectionForm, TestnameForm, TestsubjectFormSet
+from marks.forms import MarkForm, MarkFormupdate, Registrationform, StaffForm, StandardForm, StudentForm, SubjectFormSet, TestSelectionForm, TestnameForm, TestsubjectFormSet
 from marks.models import Mark, Staff, Standard, Student, Subject, Testname, Testsubject, UserForm
 
 # from .decorators import admin_required 
@@ -306,10 +306,12 @@ def create_marks(request, student_id):
                     mark = mf.save(commit=False)
                     mark.student = student
                     mark.test = test
-                    mark.subject = Testsubject.objects.get(id=int(mf.prefix))  # Ensure correct subject reference
-                    mark.status = mf.initial.get('status')  # Get the status from the initial data
+                    mark.subject = Testsubject.objects.get(id=int(mf.prefix))  
+                    mark.status = mf.initial.get('status')  
                     mark.save()
-                return redirect('success_url')
+                 
+                return redirect('student_detail', student_id=student_id)
+            
             else:
                 print("Mark forms errors:", [mf.errors for mf in mark_forms])
         else:
@@ -318,7 +320,6 @@ def create_marks(request, student_id):
         test_form = TestSelectionForm(initial={'student': student, 'test': last_test}, student=student)
         subjects = Testsubject.objects.filter(test_name=last_test)
         mark_forms = [MarkForm(prefix=str(subject.id), subject=subject) for subject in subjects]
-        # test_form = TestSelectionForm(student=student) 
     return render(request, 'mark_form.html', {
         'test_form': test_form,
         'mark_forms': mark_forms,
@@ -339,49 +340,28 @@ def update_mark(request, mark_id):
     mark = get_object_or_404(Mark, pk=mark_id)
     student = mark.student
     test = mark.test
-
-    # Get the corresponding Testsubject instance
     test_subject = mark.subject
 
     if request.method == 'POST':
-        form = MarkForm(request.POST, instance=mark)
+        form = MarkFormupdate(request.POST, instance=mark, total_mark=test_subject.total_mark, pass_mark=test_subject.pass_mark)
         if form.is_valid():
             form.save()
             return redirect('student_detail', student_id=student.id)
         else:
-            print(form.errors)  # Print any validation errors
+            print(form.errors)  
     else:
-        # Pass the total_mark and pass_mark from the Testsubject instance
-        form = MarkForm(instance=mark, subject=test_subject, initial={
-            'total_mark': test_subject.total_mark,
-            'pass_mark': test_subject.pass_mark
-        })
+        form = MarkFormupdate(instance=mark, total_mark=test_subject.total_mark, pass_mark=test_subject.pass_mark)
 
-    return render(request, 'mark_update.html', {
-        'form': form,
-        'student': student,
-        'test': test,
-    })
+    return render(request, 'mark_update.html', { 'form': form, 'student': student, 'test': test, })
 
 
+def mark_delete(request, id):
+    mark = get_object_or_404(Mark, id=id)
+    student_id = mark.student.id
+    if request.method == 'POST':
+        mark.delete()
+        return redirect('student_detail', student_id=student_id)
 
+    return redirect('student_detail', student_id=student_id)
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+ 
