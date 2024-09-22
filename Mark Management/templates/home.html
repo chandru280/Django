@@ -20,9 +20,6 @@
             color: white;
             box-shadow: 2px 0 5px rgba(0, 0, 0, 0.2);
         }
-        .sidebar h2 {
-            color: #ffffff;
-        }
         .nav-link {
             color: #ffffff;
             transition: background 0.3s;
@@ -60,11 +57,9 @@
             border-radius: 8px;
             padding: 15px;
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-        }
-        .form-inline {
             display: flex;
             align-items: center;
-            gap: 10px; /* Spacing between the elements */
+            gap: 10px; /* Spacing between elements */
         }
         .btn-primary {
             background-color: #007bff;
@@ -77,38 +72,19 @@
 </head>
 <body>
     <div class="sidebar">
-        
         {% if user.is_authenticated %}
             <h5>Hello, {{ user.username }}!</h5>
             <ul class="nav flex-column">
-                 
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'create_standard' %}">Add Standard with Subject</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'standard_list' %}">Standard List</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'create_testname_with_subjects' %}">Create Test Name with Subjects</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'student_list' %}">Student List</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'add_student' %}">Add Student</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'staff_list' %}">Staff List</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'staff_add' %}">Add Staff</a>
-                    </li>
-                
+                <li class="nav-item"><a class="nav-link" href="{% url 'create_standard' %}">Add Standard with Subject</a></li>
+                <li class="nav-item"><a class="nav-link" href="{% url 'standard_list' %}">Standard List</a></li>
+                <li class="nav-item"><a class="nav-link" href="{% url 'create_testname_with_subjects' %}">Create Test Name with Subjects</a></li>
+                <li class="nav-item"><a class="nav-link" href="{% url 'student_list' %}">Student List</a></li>
+                <li class="nav-item"><a class="nav-link" href="{% url 'add_student' %}">Add Student</a></li>
+                <li class="nav-item"><a class="nav-link" href="{% url 'staff_list' %}">Staff List</a></li>
+                <li class="nav-item"><a class="nav-link" href="{% url 'staff_add' %}">Add Staff</a></li>
             </ul>
         {% else %}
-            <li class="nav-item">
-                <a class="nav-link" href="{% url 'login' %}">Login</a>
-            </li>
+            <li class="nav-item"><a class="nav-link" href="{% url 'login' %}">Login</a></li>
         {% endif %}
     </div>
 
@@ -131,28 +107,27 @@
 
         <div class="form-container mb-4">
             {% if user.is_superuser %}
+                <form method="post" class="d-flex align-items-center" action="{% url 'academicyear' %}">
+                    {% csrf_token %}
+                    <div class="mb-0 me-2">
+                        {{ form.year.label }} {{ form.year }}
+                        {% if form.year.errors %}
+                            <div class="text-danger">{{ form.year.errors }}</div>
+                        {% endif %}
+                    </div>
+                    <button type="submit" class="btn btn-primary">Create</button>
+                </form>
 
-            <h1>Create or Select Academic Year</h1>
-            <form method="post" class="form-inline">
-                {% csrf_token %}
-                <div class="mb-3">
-                    {{ form.year.label }}
-                    {{ form.year }} <!-- Add Bootstrap styling -->
-                    {% if form.year.errors %}
-                        <div class="text-danger">{{ form.year.errors }}</div>
-                    {% endif %}
-                </div>
-
-                <button type="submit" class="btn btn-primary">Create</button>
-                {% endif %}
-
-                    <label for="academic_year" class="ms-3">Select Academic Year:</label>
+                <form method="POST" action="{% url 'home' %}" class="d-flex align-items-center ms-3">
+                    {% csrf_token %}
+                    <label for="academic_year" class="me-2">Select Academic Year:</label>
                     <select name="academic_year" id="academic_year" class="form-select" onchange="this.form.submit();">
                         {% for year in academic_years %}
                             <option value="{{ year.year }}" {% if year.year == current_year %} selected {% endif %}>{{ year.year }}</option>
                         {% endfor %}
                     </select>
-            </form>
+                </form>
+            {% endif %}
         </div>
 
         <h2 class="mt-4">Students for {{ current_year }}</h2>

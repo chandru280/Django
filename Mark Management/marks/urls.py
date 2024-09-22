@@ -10,6 +10,7 @@ urlpatterns = [
 
     # path('', TemplateView.as_view(template_name='home.html'), name='home'),
     path('', views.home, name='home'),
+    path('academicyear', views.academicyear, name='academicyear'),
 
 #Authendication
     path('login/', views.user_login, name='login'),

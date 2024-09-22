@@ -211,7 +211,6 @@ class MarkForm(forms.ModelForm):
         total_mark = self.initial.get('total_mark')
         pass_mark = self.initial.get('pass_mark')
     
-        print(f'Marks: {marks}, Total Mark: {total_mark}, Pass Mark: {pass_mark}')  # Debugging
     
         if marks is not None and total_mark is not None:
             if marks > total_mark:
