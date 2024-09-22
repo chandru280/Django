@@ -5,7 +5,7 @@ from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from marks.forms import MarkForm, MarkFormupdate, Registrationform, StaffForm, StandardForm, StudentForm, SubjectFormSet, TestSelectionForm, TestnameForm, TestsubjectFormSet
-from marks.models import Mark, Staff, Standard, Student, Subject, Testname, Testsubject, UserForm
+from marks.models import AcademicYear, Mark, Staff, Standard, Student, Subject, Testname, Testsubject, UserForm
 
 # from .decorators import admin_required 
 from .decorators import can_add_required, can_update_required, can_delete_required
@@ -30,18 +30,18 @@ def register(request):
             except IntegrityError as e:
                     
                     error_message = "Error: " + str(e)
-                    return render(request, 'signup.html', {'form': form, 'error_message': error_message})
+                    return render(request, 'authendication/signup.html', {'form': form, 'error_message': error_message})
 
     else:
         form = Registrationform()
-    return render(request, 'signup.html', {'form': form})
+    return render(request, 'authendication/signup.html', {'form': form})
 
 
  
 
 def user_login(request):
     if request.user.is_authenticated:
-        return render(request, 'login.html', {'already_logged_in': True})
+        return render(request, 'authendication/login.html', {'already_logged_in': True})
 
     if request.method == 'POST':
         username = request.POST.get('username')
@@ -64,13 +64,16 @@ def user_login(request):
                 return redirect(next_url)   
         else:
             messages.error(request, 'Invalid username or password')
-            return render(request, 'login.html', {
+            return render(request, 'authendication/login.html', {
                 'error_message': 'Invalid username or password.',
                 'next': next_url   
             })
     
     next_url = request.GET.get('next', '')  
-    return render(request, 'login.html', {'next': next_url})
+    return render(request, 'authendication/login.html', {'next': next_url})
+
+
+
 @login_required
 def user_logout(request):
     logout(request)
@@ -92,7 +95,22 @@ def manage_user_permissions(request):
         return redirect('manage_user_permissions')
     
     users = UserForm.objects.all()
-    return render(request, 'manage_user_permissions.html', {'users': users})
+    return render(request, 'authendication/manage_user_permissions.html', {'users': users})
+
+
+
+
+def home(request):
+    current_year = request.session.get('selected_academic_year')
+    academic_years = AcademicYear.objects.all()
+
+    if request.method == "POST":
+        selected_year = request.POST.get('academic_year')
+        request.session['selected_academic_year'] = selected_year
+        return redirect('home')
+
+    students = Student.objects.filter(academic_year__year=current_year)
+    return render(request, 'home.html', {'students': students, 'academic_years': academic_years, 'current_year': current_year})
 
 
 # @admin_required
@@ -118,11 +136,13 @@ def add_or_update_standard(request, standard_id=None):
         standard_form = StandardForm(instance=standard)
         formset = SubjectFormSet(instance=standard)
 
-    return render(request, 'add_standart_with_subject.html', {
+    return render(request, 'subject_standard/add_standart_with_subject.html', {
         'standard_form': standard_form,
         'formset': formset,
         'standard_id': standard_id,
     })
+
+
 
 def delete_standard(request, standard_id):
     standard = get_object_or_404(Standard, id=standard_id)
@@ -136,12 +156,16 @@ def delete_standard(request, standard_id):
 
 def standard_list(request):
     standards = Standard.objects.all()
-    return render(request, 'standard_list.html', {'standards': standards})
+    return render(request, 'subject_standard/standard_list.html', {'standards': standards})
+
+
 
 def subject_list(request, standard_id):
     standard = Standard.objects.get(pk=standard_id)
     subjects = standard.subject_set.all()
-    return render(request, 'subject_list.html', {'standard': standard, 'subjects': subjects})
+    return render(request, 'subject_standard/subject_list.html', {'standard': standard, 'subjects': subjects})
+
+
 
 def delete_subject(request, subject_id):
     subject = get_object_or_404(Subject, id=subject_id)
@@ -152,12 +176,17 @@ def delete_subject(request, subject_id):
     return redirect('subject_list', standard_id=subject.standard.id)  
 
 
+
 def create_testname_with_subjects(request):
+    current_year = request.session.get('selected_academic_year')   
     if request.method == 'POST':
         testname_form = TestnameForm(request.POST)
         formset = TestsubjectFormSet(request.POST)
         if testname_form.is_valid() and formset.is_valid():
-            testname = testname_form.save()
+            testname = testname_form.save(commit=False)
+            academic_year = AcademicYear.objects.get(year=current_year)
+            testname.academic_year = academic_year
+            testname.save()
             testsubjects = formset.save(commit=False)
             for testsubject in testsubjects:
                 testsubject.test_name = testname
@@ -167,27 +196,30 @@ def create_testname_with_subjects(request):
         testname_form = TestnameForm()
         formset = TestsubjectFormSet()
 
-    return render(request, 'add_test.html', {
+    return render(request, 'subject_standard/add_test.html', {
         'testname_form': testname_form,
         'formset': formset,
     })
 
+
+
 def fetch_subjects(request):
     standard_id = request.GET.get('standard_id')
     subjects = Subject.objects.filter(standard_id=standard_id).values('id', 'name')
-    print(standard_id)
-    print(subjects)
-    print('---------------------------------------------------------')
     return JsonResponse(list(subjects), safe=False)
 
 
 
 
 def add_student(request): 
+    current_year = request.session.get('selected_academic_year')   
     if request.method == 'POST':
         form = StudentForm(request.POST)
         if form.is_valid(): 
-            student = form.save()
+            student = form.save(commit=False)
+            academic_year = AcademicYear.objects.get(year=current_year)
+            student.academic_year = academic_year
+            student.save()
             
             user = UserForm(
                 username=student.roll_number,
@@ -201,23 +233,29 @@ def add_student(request):
             return redirect('student_list')
     else:
         form = StudentForm()
-    return render(request, 'add_student.html', {'form': form})
+    return render(request, 'student/add_student.html', {'form': form})
+
 
 
 def student_list(request):
-    students = Student.objects.all()
-    return render(request, 'student_list.html', {'students': students})
+    current_year = request.session.get('selected_academic_year')
+    students = Student.objects.filter(academic_year__year=current_year)
+    return render(request, 'student/student_list.html', {'students': students})
+
+
 
 def student_detail(request, student_id):
     student = get_object_or_404(Student, pk=student_id)
     marks = Mark.objects.filter(student=student)
     last_test = Testname.objects.last()  
     
-    return render(request, 'student_detail.html', {
+    return render(request, 'student/student_detail.html', {
         'student': student,
         'marks': marks,
         'last_test': last_test,
     })
+
+
 
 def update_student(request, student_id):
     student = get_object_or_404(Student, pk=student_id)
@@ -228,24 +266,18 @@ def update_student(request, student_id):
             return redirect('student_detail', student_id=student_id)
     else:
         form = StudentForm(instance=student)
-    return render(request, 'update_student.html', {'form': form, 'student': student})
+    return render(request, 'student/update_student.html', {'form': form, 'student': student})
+
+
 
 def delete_student(request, student_id):
     student = get_object_or_404(Student, pk=student_id)
     if request.method == 'POST':
         student.delete()
         return redirect('student_list')
-    return render(request, 'delete_student.html', {'student': student})
+    return render(request, 'student/delete_student.html', {'student': student})
 
 
-
-
-
-
-
-def staff_list(request):
-    staff = Staff.objects.all()
-    return render(request, 'staff_list.html', {'staff': staff})
 
 def staff_add(request):
     if request.method == 'POST':
@@ -255,7 +287,24 @@ def staff_add(request):
             return redirect('staff_list')
     else:
         form = StaffForm()
-    return render(request, 'staff_add.html', {'form': form})
+    return render(request, 'staff/staff_add.html', {'form': form})
+
+
+
+def staff_list(request):
+    staff = Staff.objects.all()
+    return render(request, 'staff/staff_list.html', {'staff': staff})
+
+
+
+def staff_detail(request, staff_id):
+    staff = get_object_or_404(Student, pk=staff_id)
+    
+    return render(request, 'staff/staff_detail.html', {
+        'staff': staff,
+    
+    })
+
 
 def staff_update(request, staff_id):
     staff = get_object_or_404(Staff, pk=staff_id)
@@ -266,7 +315,8 @@ def staff_update(request, staff_id):
             return redirect('staff_list')
     else:
         form = StaffForm(instance=staff)
-    return render(request, 'staff_update.html', {'form': form})
+    return render(request, 'staff/staff_update.html', {'form': form})
+
 
 
 def staff_delete(request, staff_id):
@@ -274,12 +324,9 @@ def staff_delete(request, staff_id):
     if request.method == 'POST':
         staff.delete()
         return redirect('staff_list')
-    return render(request, 'staff_delete.html', {'staff': staff})
+    return render(request, 'staff/staff_delete.html', {'staff': staff})
 
  
-
-
-
 
 def create_marks(request, student_id):
     mark_forms = []
@@ -320,7 +367,7 @@ def create_marks(request, student_id):
         test_form = TestSelectionForm(initial={'student': student, 'test': last_test}, student=student)
         subjects = Testsubject.objects.filter(test_name=last_test)
         mark_forms = [MarkForm(prefix=str(subject.id), subject=subject) for subject in subjects]
-    return render(request, 'mark_form.html', {
+    return render(request, 'subject_standard/mark_form.html', {
         'test_form': test_form,
         'mark_forms': mark_forms,
     })
@@ -352,7 +399,8 @@ def update_mark(request, mark_id):
     else:
         form = MarkFormupdate(instance=mark, total_mark=test_subject.total_mark, pass_mark=test_subject.pass_mark)
 
-    return render(request, 'mark_update.html', { 'form': form, 'student': student, 'test': test, })
+    return render(request, 'subject_standard/mark_update.html', { 'form': form, 'student': student, 'test': test, })
+
 
 
 def mark_delete(request, id):

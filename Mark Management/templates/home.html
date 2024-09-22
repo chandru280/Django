@@ -42,9 +42,17 @@
     {% endif %}
     {% endfor %}
     {% endif %}
+    <h1>Students for {{ current_year }}</h1>
 
-
-
+    <form method="POST" action="{% url 'home' %}">
+        {% csrf_token %}
+        <label for="academic_year">Select Academic Year:</label>
+        <select name="academic_year" id="academic_year" onchange="this.form.submit();">
+            {% for year in academic_years %}
+            <option value="{{ year.year }}" {% if year.year == current_year %} selected {% endif %}>{{ year.year }}</option>
+            {% endfor %}
+        </select>
+    </form>
 
     {% if user.is_authenticated %}
     <li><a href="{% url 'logout' %}">logout </a></li>

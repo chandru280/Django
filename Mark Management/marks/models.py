@@ -8,6 +8,11 @@ ROLE_CHOICES = [
     ('STUDENT', 'Student'),
 ]
 
+class AcademicYear(models.Model):
+    year = models.CharField(max_length=10, unique=True)
+
+    def __str__(self):
+        return self.year
 class UserForm(AbstractUser):
     role = models.CharField(max_length=50, choices=ROLE_CHOICES)
     id = models.IntegerField(primary_key=True)
@@ -66,6 +71,7 @@ class Student(models.Model):
     father_occupation = models.CharField(max_length=100)
     mother_name = models.CharField(max_length=100)
     mother_occupation = models.CharField(max_length=100)
+    academic_year = models.ForeignKey(AcademicYear, on_delete=models.CASCADE, null=True, blank=True)
 
     def __str__(self):
         return self.name
@@ -99,6 +105,7 @@ class Staff(models.Model):
 class Testname(models.Model):
     test_name = models.CharField(max_length=100)
     standard = models.ForeignKey(Standard, on_delete=models.CASCADE, null=True, blank=True)
+    academic_year = models.ForeignKey(AcademicYear, on_delete=models.CASCADE, null=True, blank=True)
 
     def __str__(self):
         return self.test_name
