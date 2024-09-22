@@ -1,13 +1,217 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Add Staff</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+            margin: 0;
+            padding: 20px;
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+        .form-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .form-container form {
+            display: flex;
+            flex-wrap: wrap;
+        }
+        .form-group {
+            flex: 1 1 50%; /* Two columns */
+            padding: 10px;
+            box-sizing: border-box;
+        }
+        .form-group label {
+            margin-bottom: 5px;
+            font-weight: bold;
+            display: block;
+        }
+        .form-group input, 
+        .form-group textarea, 
+        .form-group select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 16px;
+            margin-bottom: 10px;
+            transition: border-color 0.3s;
+        }
+        .form-group input:focus, 
+        .form-group textarea:focus, 
+        .form-group select:focus {
+            border-color: #007bff;
+            outline: none;
+        }
+        .form-group .error {
+            color: red;
+            font-size: 0.875em;
+            margin-top: -5px;
+        }
+        .form-container button {
+            padding: 12px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+            margin-top: 20px;
+            width: 100%;
+        }
+        .form-container button:hover {
+            background-color: #0056b3;
+        }
+    </style>
 </head>
 <body>
-    <h1>Add Staff</h1>
-    <form method="post" enctype="multipart/form-data">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Save</button>
-    </form>
+    <div class="form-container">
+        <h1>Add Staff</h1>
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="name">Name:</label>
+                {{ form.name }}
+                {% if form.name.errors %}
+                    <div class="error">{{ form.name.errors }}</div>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                <label for="email">Email:</label>
+                {{ form.email }}
+                {% if form.email.errors %}
+                    <div class="error">{{ form.email.errors }}</div>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                <label for="contact_number">Contact Number:</label>
+                {{ form.contact_number }}
+                {% if form.contact_number.errors %}
+                    <div class="error">{{ form.contact_number.errors }}</div>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                <label for="date_of_birth">Date of Birth:</label>
+                {{ form.date_of_birth }}
+                {% if form.date_of_birth.errors %}
+                    <div class="error">{{ form.date_of_birth.errors }}</div>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                <label for="address">Address:</label>
+                {{ form.address }}
+                {% if form.address.errors %}
+                    <div class="error">{{ form.address.errors }}</div>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                <label for="designation">Designation:</label>
+                {{ form.designation }}
+                {% if form.designation.errors %}
+                    <div class="error">{{ form.designation.errors }}</div>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                <label for="department">Department:</label>
+                {{ form.department }}
+                {% if form.department.errors %}
+                    <div class="error">{{ form.department.errors }}</div>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                <label for="joining_date">Joining Date:</label>
+                {{ form.joining_date }}
+                {% if form.joining_date.errors %}
+                    <div class="error">{{ form.joining_date.errors }}</div>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                <label for="salary">Salary:</label>
+                {{ form.salary }}
+                {% if form.salary.errors %}
+                    <div class="error">{{ form.salary.errors }}</div>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                <label for="gender">Gender:</label>
+                {{ form.gender }}
+                {% if form.gender.errors %}
+                    <div class="error">{{ form.gender.errors }}</div>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                <label for="nationality">Nationality:</label>
+                {{ form.nationality }}
+                {% if form.nationality.errors %}
+                    <div class="error">{{ form.nationality.errors }}</div>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                <label for="religion">Religion:</label>
+                {{ form.religion }}
+                {% if form.religion.errors %}
+                    <div class="error">{{ form.religion.errors }}</div>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                <label for="marital_status">Marital Status:</label>
+                {{ form.marital_status }}
+                {% if form.marital_status.errors %}
+                    <div class="error">{{ form.marital_status.errors }}</div>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                <label for="qualification">Qualification:</label>
+                {{ form.qualification }}
+                {% if form.qualification.errors %}
+                    <div class="error">{{ form.qualification.errors }}</div>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                <label for="experience">Experience:</label>
+                {{ form.experience }}
+                {% if form.experience.errors %}
+                    <div class="error">{{ form.experience.errors }}</div>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                <label for="photo">Photo:</label>
+                {{ form.photo }}
+                {% if form.photo.errors %}
+                    <div class="error">{{ form.photo.errors }}</div>
+                {% endif %}
+            </div>
+
+            <button type="submit">Save</button>
+        </form>
+    </div>
 </body>
 </html>
+``

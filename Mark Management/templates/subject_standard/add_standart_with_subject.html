@@ -1,7 +1,41 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Create Standard with Subjects</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .card {
+            border-radius: 10px;
+            box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        .card-header {
+            background-color: #007bff;
+            color: white;
+            border-top-left-radius: 10px;
+            border-top-right-radius: 10px;
+        }
+        .card-body {
+            padding: 30px;
+        }
+        .form-row {
+            margin-bottom: 1rem;
+        }
+        .form-error {
+            color: red;
+            font-size: 0.9rem;
+        }
+        .add-subject-btn {
+            background-color: #28a745;
+            color: white;
+            margin-bottom: 20px;
+        }
+    </style>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         $(document).ready(function() {
@@ -14,26 +48,79 @@
     </script>
 </head>
 <body>
-    <h2>Create Standard with Subjects</h2>
-    <form method="post" id="standardForm">
-        {% csrf_token %}
-        {{ standard_form.as_p }}
-        <div id="formset-container">
-            {{ formset.management_form }}
-            {% for form in formset %}
-                <div class="form-row">
-                    {{ form.as_p }}
-                </div>
-            {% endfor %}
-        </div>
-        <button type="button" id="add-subject">Add Subject</button>
-        <button type="submit">Submit</button>
-    </form>
+    <div class="container mt-5">
+        <div class="card">
+            <div class="card-header">
+                <h4>Create Standard with Subjects</h4>
+            </div>
+            <div class="card-body">
+                <form method="post" id="standardForm">
+                    {% csrf_token %}
+                    
+                    <!-- Standard Field with Error Display -->
+                    <div class="form-group">
+                        {{ standard_form.standard.label_tag }} <span class="text-danger">*</span>
+                        {{ standard_form.standard }}
+                        {% if standard_form.standard.errors %}
+                            <div class="form-error">
+                                {% for error in standard_form.standard.errors %}
+                                    {{ error }}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    <!-- Subject Formset -->
+                    <div id="formset-container">
+                        {{ formset.management_form }}
+                        {% for form in formset %}
+                            <div class="form-row">
+                                <div class="col-md-8">
+                                    {{ form.name.label_tag }} <span class="text-danger">*</span>
+                                    {{ form.name }}
+                                    {% if form.name.errors %}
+                                        <div class="form-error">
+                                            {% for error in form.name.errors %}
+                                                {{ error }}
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                <!-- Option to Delete Subject (optional) -->
+                                <div class="col-md-2">
+                                    {{ form.DELETE }}
+                                    <label for="{{ form.DELETE.id_for_label }}">Delete</label>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
 
-    <div id="empty-form" style="display:none;">
-        <div class="form-row">
-            {{ formset.empty_form.as_p }}
+                    <!-- Add Subject Button -->
+                    <button type="button" id="add-subject" class="btn add-subject-btn">Add Subject</button>
+
+                    <!-- Submit Button -->
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </form>
+
+                <!-- Hidden Empty Form for Adding More Subjects -->
+                <div id="empty-form" style="display:none;">
+                    <div class="form-row">
+                        <div class="col-md-8">
+                            {{ formset.empty_form.name.label_tag }} <span class="text-danger">*</span>
+                            {{ formset.empty_form.name }}
+                            <div class="form-error"></div>
+                        </div>
+                        <div class="col-md-2">
+                            {{ formset.empty_form.DELETE }}
+                            <label for="{{ formset.empty_form.DELETE.id_for_label }}">Delete</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

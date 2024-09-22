@@ -3,13 +3,229 @@
 <head>
     <meta charset="UTF-8">
     <title>Add Student</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+            margin: 0;
+            padding: 20px;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        form {
+            max-width: 800px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-wrap: wrap;
+        }
+        .form-group {
+            margin-bottom: 15px;
+            width: 48%; /* Set to approximately half for two columns */
+            padding: 0 1%; /* Add some space between columns */
+        }
+        .form-input, .form-select, .form-textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            transition: border-color 0.3s;
+        }
+        .form-input:focus, .form-select:focus, .form-textarea:focus {
+            border-color: #007bff;
+            outline: none;
+        }
+        .error {
+            color: red;
+            font-size: 0.875em;
+            margin-top: 5px;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            width: 100%; /* Full width button */
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
 </head>
 <body>
     <h1>Add Student</h1>
     <form method="post">
         {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Add</button>
+
+        <div class="form-group">
+            <label for="name">Name</label>
+            {{ form.name }}
+            {% if form.name.errors %}
+                <div class="error">{{ form.name.errors }}</div>
+            {% endif %}
+        </div>
+
+        <div class="form-group">
+            <label for="standard">Standard</label>
+            {{ form.standard }}
+            {% if form.standard.errors %}
+                <div class="error">{{ form.standard.errors }}</div>
+            {% endif %}
+        </div>
+
+        <div class="form-group">
+            <label for="date_of_birth">Date of Birth</label>
+            {{ form.date_of_birth }}
+            {% if form.date_of_birth.errors %}
+                <div class="error">{{ form.date_of_birth.errors }}</div>
+            {% endif %}
+        </div>
+
+        <div class="form-group">
+            <label for="address">Address</label>
+            {{ form.address }}
+            {% if form.address.errors %}
+                <div class="error">{{ form.address.errors }}</div>
+            {% endif %}
+        </div>
+
+        <div class="form-group">
+            <label for="contact_number">Contact Number</label>
+            {{ form.contact_number }}
+            {% if form.contact_number.errors %}
+                <div class="error">{{ form.contact_number.errors }}</div>
+            {% endif %}
+        </div>
+
+        <div class="form-group">
+            <label for="guardian_name">Guardian Name</label>
+            {{ form.guardian_name }}
+            {% if form.guardian_name.errors %}
+                <div class="error">{{ form.guardian_name.errors }}</div>
+            {% endif %}
+        </div>
+
+        <div class="form-group">
+            <label for="guardian_contact">Guardian Contact</label>
+            {{ form.guardian_contact }}
+            {% if form.guardian_contact.errors %}
+                <div class="error">{{ form.guardian_contact.errors }}</div>
+            {% endif %}
+        </div>
+
+        <div class="form-group">
+            <label for="email">Email</label>
+            {{ form.email }}
+            {% if form.email.errors %}
+                <div class="error">{{ form.email.errors }}</div>
+            {% endif %}
+        </div>
+
+        <div class="form-group">
+            <label for="blood_group">Blood Group</label>
+            {{ form.blood_group }}
+            {% if form.blood_group.errors %}
+                <div class="error">{{ form.blood_group.errors }}</div>
+            {% endif %}
+        </div>
+
+        <div class="form-group">
+            <label for="admission_number">Admission Number</label>
+            {{ form.admission_number }}
+            {% if form.admission_number.errors %}
+                <div class="error">{{ form.admission_number.errors }}</div>
+            {% endif %}
+        </div>
+
+        <div class="form-group">
+            <label for="nationality">Nationality</label>
+            {{ form.nationality }}
+            {% if form.nationality.errors %}
+                <div class="error">{{ form.nationality.errors }}</div>
+            {% endif %}
+        </div>
+
+        <div class="form-group">
+            <label for="gender">Gender</label>
+            {{ form.gender }}
+            {% if form.gender.errors %}
+                <div class="error">{{ form.gender.errors }}</div>
+            {% endif %}
+        </div>
+
+        <div class="form-group">
+            <label for="admission_date">Admission Date</label>
+            {{ form.admission_date }}
+            {% if form.admission_date.errors %}
+                <div class="error">{{ form.admission_date.errors }}</div>
+            {% endif %}
+        </div>
+
+        <div class="form-group">
+            <label for="previous_school">Previous School</label>
+            {{ form.previous_school }}
+            {% if form.previous_school.errors %}
+                <div class="error">{{ form.previous_school.errors }}</div>
+            {% endif %}
+        </div>
+
+        <div class="form-group">
+            <label for="roll_number">Roll Number</label>
+            {{ form.roll_number }}
+            {% if form.roll_number.errors %}
+                <div class="error">{{ form.roll_number.errors }}</div>
+            {% endif %}
+        </div>
+
+        <div class="form-group">
+            <label for="father_name">Father's Name</label>
+            {{ form.father_name }}
+            {% if form.father_name.errors %}
+                <div class="error">{{ form.father_name.errors }}</div>
+            {% endif %}
+        </div>
+
+        <div class="form-group">
+            <label for="father_occupation">Father's Occupation</label>
+            {{ form.father_occupation }}
+            {% if form.father_occupation.errors %}
+                <div class="error">{{ form.father_occupation.errors }}</div>
+            {% endif %}
+        </div>
+
+        <div class="form-group">
+            <label for="mother_name">Mother's Name</label>
+            {{ form.mother_name }}
+            {% if form.mother_name.errors %}
+                <div class="error">{{ form.mother_name.errors }}</div>
+            {% endif %}
+        </div>
+
+        <div class="form-group">
+            <label for="mother_occupation">Mother's Occupation</label>
+            {{ form.mother_occupation }}
+            {% if form.mother_occupation.errors %}
+                <div class="error">{{ form.mother_occupation.errors }}</div>
+            {% endif %}
+        </div>
+
+        <div class="form-group"></div>
+            <label for="photo">Photo:</label>
+            {{ form.image }}
+            {% if form.image.errors %}
+                <div class="error">{{ form.image.errors }}</div>
+            {% endif %}
+        </div>
+
+        <button type="submit">Add Student</button>
     </form>
 </body>
 </html>

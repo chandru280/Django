@@ -1,38 +1,65 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 
-from marks.models import Mark, Staff, Standard, Student, Subject, Testname, Testsubject, UserForm  
+from marks.models import Mark, Staff, Standard, Student, Subject, Testname, Testsubject, UserForm, AcademicYear  
 from django.forms.models import inlineformset_factory
 
 
 
 
 class Registrationform(UserCreationForm):
-   
-   
-    username = forms.CharField(max_length=100, required=True, widget=forms.TextInput(attrs={'placeholder': 'Username', 'class': 'form-input w-full text-start border border-2 border-gray-200 outline-none px-8 py-3  rounded-md text-gray-800 text-sm  pt-3 focus:border-violet-400 focus:border-2 focus:outline-none transition ease-in-out duration-500   dark:focus:border-accent',}))
-    email = forms.EmailField(required=True, widget=forms.TextInput(attrs={'placeholder': 'Email', 'class': 'form-input w-full text-start border border-2 border-gray-200 outline-none px-8 py-3  rounded-md text-gray-800 text-sm  pt-3 focus:border-violet-400 focus:border-2 focus:outline-none transition ease-in-out duration-500  dark:focus:border-accent',}))
-    password1 = forms.CharField(max_length=50, required=True, widget=forms.PasswordInput(attrs={'placeholder': 'Password', 'class': 'form-input w-full text-start border border-2 border-gray-200 outline-none px-8 py-3  rounded-md text-gray-800 text-sm  pt-3 focus:border-violet-400 focus:border-2 focus:outline-none transition ease-in-out duration-500  dark:focus:border-accent','data-toggle': 'password', 'id': 'password', }))
-    password2 = forms.CharField(max_length=50, required=True, widget=forms.PasswordInput(attrs={'placeholder': 'Confirm Password', 'class': 'form-input w-full text-start border border-2 border-gray-200 outline-none px-8 py-3  rounded-md text-gray-800 text-sm  pt-3 focus:border-violet-400 focus:border-2 focus:outline-none transition ease-in-out duration-500  dark:focus:border-accent','data-toggle': 'password', 'id': 'password', }))
-
+    username = forms.CharField(
+        max_length=100,
+        required=True,
+        widget=forms.TextInput(attrs={
+            'placeholder': 'Username',
+            'class': 'form-control'
+        })
+    )
+    email = forms.EmailField(
+        required=True,
+        widget=forms.EmailInput(attrs={
+            'placeholder': 'Email',
+            'class': 'form-control'
+        })
+    )
+    password1 = forms.CharField(
+        max_length=50,
+        required=True,
+        widget=forms.PasswordInput(attrs={
+            'placeholder': 'Password',
+            'class': 'form-control',
+            'id': 'password',
+        })
+    )
+    password2 = forms.CharField(
+        max_length=50,
+        required=True,
+        widget=forms.PasswordInput(attrs={
+            'placeholder': 'Confirm Password',
+            'class': 'form-control',
+            'id': 'password',
+        })
+    )
+    
     class Meta:
         model = UserForm
         fields = ['username', 'email', 'password1', 'password2', 'role']
 
+        widgets = {
+            'role': forms.Select(attrs={
+            'class': 'form-control',
+        }) }
 
 
 
-
-class StudentForm(forms.ModelForm):
+class AcademicYearForm(forms.ModelForm):
     class Meta:
-        model = Student
+        model = AcademicYear
         exclude = []
 
 
-class StaffForm(forms.ModelForm):
-    class Meta:
-        model = Staff
-        fields = '__all__' 
+
 
 
 
@@ -40,14 +67,30 @@ class StandardForm(forms.ModelForm):
     class Meta:
         model = Standard
         fields = ['standard']
+        widgets = {
+            'standard': forms.TextInput(
+                attrs={
+                    'class': 'form-control',   
+                    'placeholder': 'Enter Standard',   
+                }
+            )
+        }
 
 SubjectFormSet = inlineformset_factory(
-        Standard,
-        Subject,
-        fields=('name',),
-        extra=1,
-        can_delete=True
-    )
+    Standard,
+    Subject,
+    fields=('name',),
+    extra=1,
+    can_delete=True,
+    widgets={
+        'name': forms.TextInput(
+            attrs={
+                'class': 'form-control',  
+                'placeholder': 'Enter Subject Name',  
+            }
+        )
+    }
+)
 
 
 
@@ -70,13 +113,64 @@ TestsubjectFormSet = inlineformset_factory(
 class StudentForm(forms.ModelForm):
     class Meta:
         model = Student
-        exclude = []
+        exclude = ['academic_year',]
+
+        widgets = {
+            'name': forms.TextInput(attrs={'class': 'form-input', 'placeholder': 'Name'}),
+            'standard': forms.Select(attrs={'class': 'form-select'}),
+            'date_of_birth': forms.DateInput(attrs={'class': 'form-input', 'type': 'date'}),
+            'address': forms.Textarea(attrs={'class': 'form-textarea', 'placeholder': 'Address'}),
+            'contact_number': forms.TextInput(attrs={'class': 'form-input', 'placeholder': 'Contact Number'}),
+            'guardian_name': forms.TextInput(attrs={'class': 'form-input', 'placeholder': 'Guardian Name'}),
+            'guardian_contact': forms.TextInput(attrs={'class': 'form-input', 'placeholder': 'Guardian Contact'}),
+            'email': forms.EmailInput(attrs={'class': 'form-input', 'placeholder': 'Email'}),
+            'blood_group': forms.Select(attrs={'class': 'form-select'}),
+            'admission_number': forms.TextInput(attrs={'class': 'form-input', 'placeholder': 'Admission Number'}),
+            'nationality': forms.TextInput(attrs={'class': 'form-input', 'placeholder': 'Nationality'}),
+            'gender': forms.Select(attrs={'class': 'form-select'}),
+            'admission_date': forms.DateInput(attrs={'class': 'form-input', 'type': 'date'}),
+            'previous_school': forms.TextInput(attrs={'class': 'form-input', 'placeholder': 'Previous School'}),
+            'roll_number': forms.TextInput(attrs={'class': 'form-input', 'placeholder': 'Roll Number'}),
+            'father_name': forms.TextInput(attrs={'class': 'form-input', 'placeholder': 'Father\'s Name'}),
+            'father_occupation': forms.TextInput(attrs={'class': 'form-input', 'placeholder': 'Father\'s Occupation'}),
+            'mother_name': forms.TextInput(attrs={'class': 'form-input', 'placeholder': 'Mother\'s Name'}),
+            'mother_occupation': forms.TextInput(attrs={'class': 'form-input', 'placeholder': 'Mother\'s Occupation'}),
+            'image': forms.ClearableFileInput(attrs={'class': 'form-input'}),
+        }
+
+    def __init__(self, *args, **kwargs):
+        super(StudentForm, self).__init__(*args, **kwargs)
+        for field in self.fields.values():
+            field.error_messages = {
+                'required': 'This field is required.',
+                'invalid': 'Enter a valid value.',
+            }
+
 
 
 class StaffForm(forms.ModelForm):
     class Meta:
         model = Staff
         fields = '__all__' 
+
+        widgets = {
+            'name': forms.TextInput(attrs={'class': 'form-input', 'placeholder': 'Enter Name'}),
+            'email': forms.EmailInput(attrs={'class': 'form-input', 'placeholder': 'Enter Email'}),
+            'contact_number': forms.TextInput(attrs={'class': 'form-input', 'placeholder': 'Enter Contact Number'}),
+            'date_of_birth': forms.DateInput(attrs={'class': 'form-input', 'type': 'date'}),
+            'address': forms.Textarea(attrs={'class': 'form-input', 'placeholder': 'Enter Address', 'rows': 4}),
+            'designation': forms.TextInput(attrs={'class': 'form-input', 'placeholder': 'Enter Designation'}),
+            'department': forms.TextInput(attrs={'class': 'form-input', 'placeholder': 'Enter Department'}),
+            'joining_date': forms.DateInput(attrs={'class': 'form-input', 'type': 'date'}),
+            'salary': forms.NumberInput(attrs={'class': 'form-input', 'placeholder': 'Enter Salary'}),
+            'gender': forms.Select(attrs={'class': 'form-select'}),
+            'nationality': forms.TextInput(attrs={'class': 'form-input', 'placeholder': 'Enter Nationality'}),
+            'religion': forms.TextInput(attrs={'class': 'form-input', 'placeholder': 'Enter Religion'}),
+            'marital_status': forms.Select(attrs={'class': 'form-select'}),
+            'qualification': forms.TextInput(attrs={'class': 'form-input', 'placeholder': 'Enter Qualification'}),
+            'experience': forms.TextInput(attrs={'class': 'form-input', 'placeholder': 'Enter Experience'}),
+            'photo': forms.ClearableFileInput(attrs={'class': 'form-input'}),
+        }
 
 
 

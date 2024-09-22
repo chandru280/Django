@@ -4,7 +4,7 @@ from django.db import IntegrityError
 from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
-from marks.forms import MarkForm, MarkFormupdate, Registrationform, StaffForm, StandardForm, StudentForm, SubjectFormSet, TestSelectionForm, TestnameForm, TestsubjectFormSet
+from marks.forms import MarkForm, MarkFormupdate, Registrationform, StaffForm, StandardForm, StudentForm, SubjectFormSet, TestSelectionForm, TestnameForm, TestsubjectFormSet, AcademicYearForm
 from marks.models import AcademicYear, Mark, Staff, Standard, Student, Subject, Testname, Testsubject, UserForm
 
 # from .decorators import admin_required 
@@ -99,10 +99,22 @@ def manage_user_permissions(request):
 
 
 
+def academicyear(request):
+    if request.method == 'POST':
+        form = AcademicYearForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            return redirect('home')
+    else:
+        form = AcademicYearForm()
+    return redirect('home')
+ 
+
 
 def home(request):
     current_year = request.session.get('selected_academic_year')
     academic_years = AcademicYear.objects.all()
+    form = AcademicYearForm()
 
     if request.method == "POST":
         selected_year = request.POST.get('academic_year')
@@ -110,7 +122,7 @@ def home(request):
         return redirect('home')
 
     students = Student.objects.filter(academic_year__year=current_year)
-    return render(request, 'home.html', {'students': students, 'academic_years': academic_years, 'current_year': current_year})
+    return render(request, 'home.html', {'form':form, 'students': students, 'academic_years': academic_years, 'current_year': current_year})
 
 
 # @admin_required
@@ -275,8 +287,7 @@ def delete_student(request, student_id):
     if request.method == 'POST':
         student.delete()
         return redirect('student_list')
-    return render(request, 'student/delete_student.html', {'student': student})
-
+    return redirect('student_list')
 
 
 def staff_add(request):
@@ -298,7 +309,7 @@ def staff_list(request):
 
 
 def staff_detail(request, staff_id):
-    staff = get_object_or_404(Student, pk=staff_id)
+    staff = get_object_or_404(Staff, pk=staff_id)
     
     return render(request, 'staff/staff_detail.html', {
         'staff': staff,
@@ -324,8 +335,7 @@ def staff_delete(request, staff_id):
     if request.method == 'POST':
         staff.delete()
         return redirect('staff_list')
-    return render(request, 'staff/staff_delete.html', {'staff': staff})
-
+    return redirect('staff_list')
  
 
 def create_marks(request, student_id):
@@ -399,7 +409,7 @@ def update_mark(request, mark_id):
     else:
         form = MarkFormupdate(instance=mark, total_mark=test_subject.total_mark, pass_mark=test_subject.pass_mark)
 
-    return render(request, 'subject_standard/mark_update.html', { 'form': form, 'student': student, 'test': test, })
+    return render(request, 'subject_standard/mark_update.html', { 'form': form, 'student': student, 'test': test,  'mark': mark,})
 
 
 

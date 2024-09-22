@@ -72,6 +72,7 @@ class Student(models.Model):
     mother_name = models.CharField(max_length=100)
     mother_occupation = models.CharField(max_length=100)
     academic_year = models.ForeignKey(AcademicYear, on_delete=models.CASCADE, null=True, blank=True)
+    image = models.ImageField(default='default.jpg', upload_to='profile', null=True, blank=True)
 
     def __str__(self):
         return self.name

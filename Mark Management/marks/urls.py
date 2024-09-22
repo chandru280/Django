@@ -2,6 +2,9 @@ from django.urls import path
 from marks import views
 from django.views.generic import TemplateView 
 from django.contrib.auth import views as auth_views
+from django.conf import settings
+from django.conf.urls.static import static
+
 
 urlpatterns = [
 
@@ -48,6 +51,7 @@ urlpatterns = [
 #Staff
     path('add_staff/', views.staff_add, name='staff_add'),
     path('list_staff/', views.staff_list, name='staff_list'),
+    path('<int:staff_id>/detail/', views.staff_detail, name='staff_detail'),
     path('<int:staff_id>/update/', views.staff_update, name='staff_update'),
     path('<int:staff_id>/delete/', views.staff_delete, name='staff_delete'),
 
@@ -56,3 +60,7 @@ urlpatterns = [
 
      
     ]
+
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
