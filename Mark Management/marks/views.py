@@ -22,10 +22,8 @@ def register(request):
         if form.is_valid():
             try:
                 user = form.save(commit=False)
-                
                 user.save()
-           
-                
+                messages.success(request, 'Registration completed successfully')
                 return redirect('login')
             except IntegrityError as e:
                     
@@ -77,6 +75,7 @@ def user_login(request):
 @login_required
 def user_logout(request):
     logout(request)
+    messages.success(request, 'Logout successful')
     return redirect('login')
 
 
@@ -91,7 +90,7 @@ def manage_user_permissions(request):
             user.can_update = f'user_{user.id}_can_update' in request.POST
             user.can_delete = f'user_{user.id}_can_delete' in request.POST
             user.save()
-
+        messages.success(request, 'Permission modified for the use successful')
         return redirect('manage_user_permissions')
     
     users = UserForm.objects.all()
@@ -104,6 +103,7 @@ def academicyear(request):
         form = AcademicYearForm(request.POST, request.FILES)
         if form.is_valid():
             form.save()
+            messages.success(request, 'Academic year created successful')
             return redirect('home')
     else:
         form = AcademicYearForm()
@@ -151,6 +151,11 @@ def add_or_update_standard(request, standard_id=None):
                 subject.standard = standard
                 subject.save()
             formset.save_m2m()   
+            if standard:
+                messages.success(request, 'Standard updated successful')
+            else:
+                messages.success(request, 'Standard created successful')
+
             return redirect('standard_list')   
     else:
         standard_form = StandardForm(instance=standard)
@@ -168,6 +173,7 @@ def delete_standard(request, standard_id):
     standard = get_object_or_404(Standard, id=standard_id)
     if request.method == 'POST':
         standard.delete() 
+        messages.success(request, 'Standard deleted successful')
         return redirect('standard_list')  
     return redirect('standard_list')  
 
@@ -192,6 +198,7 @@ def delete_subject(request, subject_id):
     if request.method == 'POST':
         standard_id = subject.standard.id  
         subject.delete() 
+        messages.success(request, 'Subject deleted successful')
         return redirect('subject_list', standard_id=standard_id)   
     return redirect('subject_list', standard_id=subject.standard.id)  
 
@@ -211,6 +218,7 @@ def create_testname_with_subjects(request):
             for testsubject in testsubjects:
                 testsubject.test_name = testname
                 testsubject.save()
+            messages.success(request, 'Test created successful')
             return redirect('create_testname_with_subjects')
     else:
         testname_form = TestnameForm()
@@ -249,7 +257,7 @@ def add_student(request):
                 name=student.name,
             )
             user.save()
-            
+            messages.success(request, 'Student created successful')
             return redirect('student_list')
     else:
         form = StudentForm()
@@ -283,6 +291,7 @@ def update_student(request, student_id):
         form = StudentForm(request.POST, request.FILES, instance=student)
         if form.is_valid():
             form.save()
+            messages.success(request, 'Student Updated successful')
             return redirect('student_list')
     else:
         form = StudentForm(instance=student)
@@ -294,6 +303,7 @@ def delete_student(request, student_id):
     student = get_object_or_404(Student, pk=student_id)
     if request.method == 'POST':
         student.delete()
+        messages.success(request, 'Student deleted successful')
         return redirect('student_list')
     return redirect('student_list')
 
@@ -303,6 +313,7 @@ def staff_add(request):
         form = StaffForm(request.POST, request.FILES)
         if form.is_valid():
             form.save()
+            messages.success(request, 'Staff created successful')
             return redirect('staff_list')
     else:
         form = StaffForm()
@@ -331,6 +342,7 @@ def staff_update(request, staff_id):
         form = StaffForm(request.POST, request.FILES, instance=staff)
         if form.is_valid():
             form.save()
+            messages.success(request, 'Staff updated successful')
             return redirect('staff_list')
     else:
         form = StaffForm(instance=staff)
@@ -342,6 +354,7 @@ def staff_delete(request, staff_id):
     staff = get_object_or_404(Staff, pk=staff_id)
     if request.method == 'POST':
         staff.delete()
+        messages.success(request, 'Stadd deleted successful')
         return redirect('staff_list')
     return redirect('staff_list')
  
@@ -375,7 +388,7 @@ def create_marks(request, student_id):
                     mark.subject = Testsubject.objects.get(id=int(mf.prefix))
                     mark.status = mf.initial.get('status')
                     mark.save()
-
+                messages.success(request, 'Mark added successful')
                 return redirect('student_detail', student_id=student_id)
 
             else:
@@ -412,6 +425,7 @@ def update_mark(request, mark_id):
         form = MarkFormupdate(request.POST, instance=mark, total_mark=test_subject.total_mark, pass_mark=test_subject.pass_mark)
         if form.is_valid():
             form.save()
+            messages.success(request, 'Mark updated successful')
             return redirect('student_detail', student_id=student.id)
         else:
             print(form.errors)  
@@ -427,6 +441,7 @@ def mark_delete(request, id):
     student_id = mark.student.id
     if request.method == 'POST':
         mark.delete()
+        messages.success(request, 'Mark deleted successful')
         return redirect('student_detail', student_id=student_id)
 
     return redirect('student_detail', student_id=student_id)
