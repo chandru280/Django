@@ -8,6 +8,28 @@ ROLE_CHOICES = [
     ('STUDENT', 'Student'),
 ]
 
+Gender= (
+    ('', 'Select Gender'), 
+    ('Male', 'Male'),
+    ('Female', 'Female'),
+    ('Others', 'Others'),
+)
+
+BLOOD_GROUP = (
+        ('', 'Select BLOOD GROUP'), 
+        ('A+', 'A+'),
+        ('A-', 'A-'),
+        ('B+', 'B+'),
+        ('B-', 'B-'),
+        ('O+', 'O+'),
+        ('O-', 'O-'),
+        ('AB+', 'AB+'),
+        ('AB-', 'AB-'),
+        ('A1+', 'A1+'),
+        ('A1-', 'A1-'),
+
+    )
+
 class AcademicYear(models.Model):
     year = models.CharField(max_length=10, unique=True)
 
@@ -44,7 +66,7 @@ class Standard(models.Model):
 
 class Subject(models.Model):
     name = models.CharField(max_length=100)
-    standard = models.ForeignKey(Standard, on_delete=models.CASCADE)
+    standard = models.ForeignKey(Standard, on_delete=models.CASCADE, related_name='subjects')
 
     def __str__(self):
         return self.name
@@ -60,10 +82,10 @@ class Student(models.Model):
     guardian_name = models.CharField(max_length=100)
     guardian_contact = models.CharField(max_length=15)
     email = models.EmailField(max_length=254)
-    blood_group = models.CharField(max_length=5)
+    blood_group = models.CharField(max_length=30,choices=BLOOD_GROUP,null=True,blank=True)
     admission_number = models.CharField(max_length=20)
     nationality = models.CharField(max_length=50)
-    gender = models.CharField(max_length=10)
+    gender = models.CharField(max_length=10, choices=Gender, null=True, blank=True)
     admission_date = models.DateField()
     previous_school = models.CharField(max_length=100)
     roll_number = models.CharField(max_length=20)
@@ -89,7 +111,7 @@ class Staff(models.Model):
     department = models.CharField(max_length=100)
     joining_date = models.DateField()
     salary = models.DecimalField(max_digits=10, decimal_places=2)
-    gender = models.CharField(max_length=10)
+    gender = models.CharField(max_length=10, choices=Gender, null=True, blank=True)
     nationality = models.CharField(max_length=50)
     religion = models.CharField(max_length=50)
     marital_status = models.CharField(max_length=20)

@@ -14,7 +14,7 @@ from django.contrib.auth.hashers import make_password
 
 from django.contrib import messages
 
-
+ 
 
 def register(request):
     if request.method == 'POST':
@@ -114,10 +114,18 @@ def academicyear(request):
 def home(request):
     current_year = request.session.get('selected_academic_year')
     academic_years = AcademicYear.objects.all()
+
+    if current_year is None:
+        academic_year = AcademicYear.objects.last()   
+        if academic_year:   
+            request.session['selected_academic_year'] = academic_year.year
+            current_year = academic_year.year   
+
     form = AcademicYearForm()
 
     if request.method == "POST":
         selected_year = request.POST.get('academic_year')
+        print('selected_year   ',selected_year)
         request.session['selected_academic_year'] = selected_year
         return redirect('home')
 
@@ -226,7 +234,7 @@ def fetch_subjects(request):
 def add_student(request): 
     current_year = request.session.get('selected_academic_year')   
     if request.method == 'POST':
-        form = StudentForm(request.POST)
+        form = StudentForm(request.POST, request.FILES)
         if form.is_valid(): 
             student = form.save(commit=False)
             academic_year = AcademicYear.objects.get(year=current_year)
@@ -272,10 +280,10 @@ def student_detail(request, student_id):
 def update_student(request, student_id):
     student = get_object_or_404(Student, pk=student_id)
     if request.method == 'POST':
-        form = StudentForm(request.POST, instance=student)
+        form = StudentForm(request.POST, request.FILES, instance=student)
         if form.is_valid():
             form.save()
-            return redirect('student_detail', student_id=student_id)
+            return redirect('student_list')
     else:
         form = StudentForm(instance=student)
     return render(request, 'student/update_student.html', {'form': form, 'student': student})
@@ -341,10 +349,11 @@ def staff_delete(request, staff_id):
 def create_marks(request, student_id):
     mark_forms = []
     student = get_object_or_404(Student, id=student_id)
-    last_test = Testname.objects.last()
+    student_standard = student.standard
+    last_test = Testname.objects.filter(standard=student_standard).last()
 
     if request.method == 'POST':
-        test_form = TestSelectionForm(request.POST)
+        test_form = TestSelectionForm(request.POST, student=student)
         if test_form.is_valid():
             student = test_form.cleaned_data['student']
             test = test_form.cleaned_data['test']
@@ -363,12 +372,12 @@ def create_marks(request, student_id):
                     mark = mf.save(commit=False)
                     mark.student = student
                     mark.test = test
-                    mark.subject = Testsubject.objects.get(id=int(mf.prefix))  
-                    mark.status = mf.initial.get('status')  
+                    mark.subject = Testsubject.objects.get(id=int(mf.prefix))
+                    mark.status = mf.initial.get('status')
                     mark.save()
-                 
+
                 return redirect('student_detail', student_id=student_id)
-            
+
             else:
                 print("Mark forms errors:", [mf.errors for mf in mark_forms])
         else:
@@ -377,6 +386,7 @@ def create_marks(request, student_id):
         test_form = TestSelectionForm(initial={'student': student, 'test': last_test}, student=student)
         subjects = Testsubject.objects.filter(test_name=last_test)
         mark_forms = [MarkForm(prefix=str(subject.id), subject=subject) for subject in subjects]
+    
     return render(request, 'subject_standard/mark_form.html', {
         'test_form': test_form,
         'mark_forms': mark_forms,
@@ -388,9 +398,8 @@ def create_marks(request, student_id):
 def get_subjects(request):
     test_id = request.GET.get('test')
     subjects = Testsubject.objects.filter(test_name_id=test_id)
-    data = {'subjects': list(subjects.values('id', 'subject'))}
-    return JsonResponse(data)
-
+    subject_data = [{'id': subject.id, 'subject': str(subject.subject)} for subject in subjects]
+    return JsonResponse({'subjects': subject_data})
 
 
 def update_mark(request, mark_id):

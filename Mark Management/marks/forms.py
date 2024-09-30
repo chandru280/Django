@@ -174,7 +174,6 @@ class StaffForm(forms.ModelForm):
 
 
 
-
 class TestSelectionForm(forms.Form):
     student = forms.ModelChoiceField(queryset=Student.objects.all(), label="Select Student")
     test = forms.ModelChoiceField(queryset=Testname.objects.all(), label="Select Test")
@@ -182,14 +181,17 @@ class TestSelectionForm(forms.Form):
     def __init__(self, *args, **kwargs):
         student = kwargs.pop('student', None)
         super(TestSelectionForm, self).__init__(*args, **kwargs)
+
         if student:
             self.fields['student'].initial = student
-
-        # Exclude already saved tests for the selected student
-        if student:
+            student_instance = Student.objects.get(id=student.id)
+            student_standard = student_instance.standard
             saved_tests = Mark.objects.filter(student=student).values_list('test', flat=True)
-            self.fields['test'].queryset = Testname.objects.exclude(id__in=saved_tests)
-
+            self.fields['test'].queryset = Testname.objects.filter(
+                standard=student_standard
+            ).exclude(id__in=saved_tests)
+        else:
+            self.fields['test'].queryset = Testname.objects.all()
 
 
 
