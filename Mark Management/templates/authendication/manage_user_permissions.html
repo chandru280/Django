@@ -1,67 +1,57 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Manage User Permissions</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        body {
-            background-color: #f4f7fa;
-        }
-        h2 {
-            margin-bottom: 20px;
-        }
-        .table th, .table td {
-            vertical-align: middle;
-        }
-        .btn-save {
-            background-color: #007bff;
-            color: white;
-        }
-        .btn-save:hover {
-            background-color: #0056b3;
-        }
-    </style>
-</head>
-<body>
-    <div class="container mt-5">
-        <h2>Manage User Permissions</h2>
-        <form method="post">
-            {% csrf_token %}
-            <table class="table table-bordered">
-                <thead class="table-light">
-                    <tr>
-                        <th>User</th>
-                        <th>Can Add</th>
-                        <th>Can Update</th>
-                        <th>Can Delete</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for user in users %}
-                        <tr>
-                            <td>{{ user.username }}</td>
-                            <td>
-                                <input type="checkbox" name="user_{{ user.id }}_can_add" {% if user.can_add %}checked{% endif %}>
-                            </td>
-                            <td>
-                                <input type="checkbox" name="user_{{ user.id }}_can_update" {% if user.can_update %}checked{% endif %}>
-                            </td>
-                            <td>
-                                <input type="checkbox" name="user_{{ user.id }}_can_delete" {% if user.can_delete %}checked{% endif %}>
-                            </td>
-                            <td>
-                                <button type="submit" class="btn btn-save">Save Changes</button>
-                            </td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </form>
-    </div>
+<!-- templates/permissions.html -->
+{% extends 'base.html' %}
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-</body>
-</html>
+{% block title %}Manage User Permissions{% endblock %}
+
+{% block content %}
+<h2>Manage User Permissions</h2>
+<form method="post">
+    {% csrf_token %}
+    <table class="table table-bordered">
+        <thead class="table-light">
+            <tr>
+                <th>User</th>
+                <th>Can Add</th>
+                <th>Can Update</th>
+                <th>Can Delete</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for user in users %}
+                <tr>
+                    <td>{{ user.username }}</td>
+                    <td>
+                        <input type="checkbox" name="user_{{ user.id }}_can_add" {% if user.can_add %}checked{% endif %}>
+                    </td>
+                    <td>
+                        <input type="checkbox" name="user_{{ user.id }}_can_update" {% if user.can_update %}checked{% endif %}>
+                    </td>
+                    <td>
+                        <input type="checkbox" name="user_{{ user.id }}_can_delete" {% if user.can_delete %}checked{% endif %}>
+                    </td>
+                    <td>
+                        <button type="submit" class="btn btn-save">Save Changes</button>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</form>
+
+<style>
+    h2 {
+        margin-bottom: 20px;
+    }
+    .table th, .table td {
+        vertical-align: middle;
+    }
+    .btn-save {
+        background-color: #007bff;
+        color: white;
+    }
+    .btn-save:hover {
+        background-color: #0056b3;
+    }
+</style>
+{% endblock %}

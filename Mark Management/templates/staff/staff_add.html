@@ -1,9 +1,8 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Add Staff</title>
+{% extends "base.html" %}
+
+{% block title %}Add Staff{% endblock %}
+
+{% block content %}
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -75,8 +74,7 @@
             background-color: #0056b3;
         }
     </style>
-</head>
-<body>
+ 
     <div class="form-container">
         <h1>Add Staff</h1>
         <form method="post" enctype="multipart/form-data">
@@ -212,6 +210,5 @@
             <button type="submit">Save</button>
         </form>
     </div>
-</body>
-</html>
-``
+    {% endblock %}
+

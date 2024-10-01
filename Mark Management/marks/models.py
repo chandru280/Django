@@ -15,6 +15,14 @@ Gender= (
     ('Others', 'Others'),
 )
 
+MARITAL_STATUS_CHOICES = [
+        ('', 'MARITAL_STATUS'), 
+        ('single', 'Single'),
+        ('married', 'Married'),
+        ('divorced', 'Divorced'),
+        ('widowed', 'Widowed'),
+    ]
+
 BLOOD_GROUP = (
         ('', 'Select BLOOD GROUP'), 
         ('A+', 'A+'),
@@ -114,7 +122,7 @@ class Staff(models.Model):
     gender = models.CharField(max_length=10, choices=Gender, null=True, blank=True)
     nationality = models.CharField(max_length=50)
     religion = models.CharField(max_length=50)
-    marital_status = models.CharField(max_length=20)
+    marital_status = models.CharField(max_length=20, choices=MARITAL_STATUS_CHOICES, null=True, blank=True)
     qualification = models.CharField(max_length=100)
     experience = models.CharField(max_length=100)
     photo = models.ImageField(upload_to='staff_photos/', null=True, blank=True)
