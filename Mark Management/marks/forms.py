@@ -113,7 +113,7 @@ TestsubjectFormSet = inlineformset_factory(
 class StudentForm(forms.ModelForm):
     class Meta:
         model = Student
-        exclude = ['academic_year',]
+        exclude = ['academic_year','roll_number'] 
 
         widgets = {
             'name': forms.TextInput(attrs={'class': 'form-input', 'placeholder': 'Name'}),
@@ -145,6 +145,18 @@ class StudentForm(forms.ModelForm):
                 'required': 'This field is required.',
                 'invalid': 'Enter a valid value.',
             }
+
+    def save(self, commit=True):
+        student = super().save(commit=False)
+        if student.roll_number is None:
+            last_student = Student.objects.order_by('-roll_number').first()
+            if last_student:
+                student.roll_number = last_student.roll_number + 1
+            else:
+                student.roll_number = 1   
+        if commit:
+            student.save()
+        return student
 
 
 
