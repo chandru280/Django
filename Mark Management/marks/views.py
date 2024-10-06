@@ -273,6 +273,31 @@ def student_list(request, standard_id):
 
 
 
+def generate_register_numbers(request, standard_id):
+    current_year = request.session.get('selected_academic_year')
+    if request.method == 'GET':
+        start_register = request.GET.get('start_register')
+
+        start_register = int(start_register)
+        standard = get_object_or_404(Standard, id=standard_id)
+
+        students = Student.objects.filter(academic_year__year=current_year, standard=standard).order_by('name')
+        
+        if not students.exists():
+            messages.warning(request, "No students found in the selected standard.")
+            return redirect('student_list', standard_id=standard_id)
+
+        for idx, student in enumerate(students, start=start_register):
+            student.register_no = f"{idx:04d}"   
+            student.save()
+
+        messages.success(request, "Register numbers have been successfully generated.")
+        return redirect('student_list', standard_id=standard_id)
+    else:
+        return redirect('student_list', standard_id=standard_id)
+
+
+
 def student_detail(request, student_id):
     student = get_object_or_404(Student, pk=student_id)
     marks = Mark.objects.filter(student=student)

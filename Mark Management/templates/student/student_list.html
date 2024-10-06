@@ -80,6 +80,12 @@
 </head>
 <body>
     <h1>Student List</h1>
+    <form method="get" action="{% url 'generate_register_numbers' standard_id %}">
+        <label for="start_register">Starting Register Number:</label>
+        <input type="number" id="start_register" name="start_register" min="1" required>
+        
+        <button type="submit">Generate Register Numbers</button>
+    </form>
     
     <!-- Search form -->
     <form class="search-form" method="get" action="{% url 'student_list' standard_id %}">

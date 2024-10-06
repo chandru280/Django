@@ -49,6 +49,8 @@ urlpatterns = [
     path('student/<int:student_id>/<int:standard_id>/update/', views.update_student, name='update_student'),
     path('student/<int:student_id>/<int:standard_id>/delete/', views.delete_student, name='delete_student'),
    
+    path('generate_register_numbers/<int:standard_id>/', views.generate_register_numbers, name='generate_register_numbers'),
+
 #Staff
     path('add_staff/', views.staff_add, name='staff_add'),
     path('list_staff/', views.staff_list, name='staff_list'),
