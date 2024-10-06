@@ -113,7 +113,7 @@ TestsubjectFormSet = inlineformset_factory(
 class StudentForm(forms.ModelForm):
     class Meta:
         model = Student
-        exclude = ['academic_year','roll_number'] 
+        exclude = ['academic_year', 'roll_number', 'register_no'] 
 
         widgets = {
             'name': forms.TextInput(attrs={'class': 'form-input', 'placeholder': 'Name'}),

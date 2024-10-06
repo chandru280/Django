@@ -188,7 +188,7 @@ def standard_list(request):
 
 def subject_list(request, standard_id):
     standard = Standard.objects.get(pk=standard_id)
-    subjects = standard.subject_set.all()
+    subjects = standard.subjects.all()
     return render(request, 'subject_standard/subject_list.html', {'standard': standard, 'subjects': subjects})
 
 
@@ -265,10 +265,11 @@ def add_student(request):
 
 
 
-def student_list(request):
+def student_list(request, standard_id):
     current_year = request.session.get('selected_academic_year')
-    students = Student.objects.filter(academic_year__year=current_year)
-    return render(request, 'student/student_list.html', {'students': students})
+    students = Student.objects.filter(academic_year__year=current_year, standard_id=standard_id)
+    standard_id = standard_id
+    return render(request, 'student/student_list.html', {'students': students, 'standard_id':standard_id})
 
 
 
@@ -285,27 +286,29 @@ def student_detail(request, student_id):
 
 
 
-def update_student(request, student_id):
+def update_student(request, student_id, standard_id):
     student = get_object_or_404(Student, pk=student_id)
     if request.method == 'POST':
         form = StudentForm(request.POST, request.FILES, instance=student)
         if form.is_valid():
             form.save()
-            messages.success(request, 'Student Updated successful')
-            return redirect('student_list')
+            messages.success(request, 'Student Updated successfully')
+            return redirect('student_list', standard_id=standard_id)    
     else:
         form = StudentForm(instance=student)
     return render(request, 'student/update_student.html', {'form': form, 'student': student})
 
 
 
-def delete_student(request, student_id):
+
+def delete_student(request, student_id, standard_id):
     student = get_object_or_404(Student, pk=student_id)
     if request.method == 'POST':
         student.delete()
-        messages.success(request, 'Student deleted successful')
-        return redirect('student_list')
-    return redirect('student_list')
+        messages.success(request, 'Student deleted successfully')
+        return redirect('student_list', standard_id=standard_id)  
+    return redirect('student_list', standard_id=standard_id)
+
 
 
 def staff_add(request):

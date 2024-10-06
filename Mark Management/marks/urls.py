@@ -43,11 +43,11 @@ urlpatterns = [
    
 
 #Student
-    path('students/', views.student_list, name='student_list'),
+    path('students/<int:standard_id>', views.student_list, name='student_list'),
     path('student/<int:student_id>/', views.student_detail, name='student_detail'),
     path('student_add/', views.add_student, name='add_student'),
-    path('student/<int:student_id>/update/', views.update_student, name='update_student'),
-    path('student/<int:student_id>/delete/', views.delete_student, name='delete_student'),
+    path('student/<int:student_id>/<int:standard_id>/update/', views.update_student, name='update_student'),
+    path('student/<int:student_id>/<int:standard_id>/delete/', views.delete_student, name='delete_student'),
    
 #Staff
     path('add_staff/', views.staff_add, name='staff_add'),
