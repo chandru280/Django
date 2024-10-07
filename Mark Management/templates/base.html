@@ -87,6 +87,7 @@
         {% if user.is_authenticated %}
             <h5>Hello, {{ user.username }}!</h5>
             <ul class="nav flex-column">
+                <li class="nav-item"><a class="nav-link" href="{% url 'home' %}">Dashboard</a></li>
                 <li class="nav-item"><a class="nav-link" href="{% url 'create_standard' %}">Add Standard with Subject</a></li>
                 <li class="nav-item"><a class="nav-link" href="{% url 'standard_list' %}">Standard List</a></li>
                 <li class="nav-item"><a class="nav-link" href="{% url 'create_testname_with_subjects' %}">Create Test Name with Subjects</a></li>
@@ -96,7 +97,9 @@
                 <li class="nav-item"><a class="nav-link" href="{% url 'staff_add' %}">Add Staff</a></li>
             </ul>
         {% else %}
-            <li class="nav-item"><a class="nav-link" href="{% url 'login' %}">Login</a></li>
+            <ul class="nav flex-column">
+                <li class="nav-item"><a class="nav-link" href="{% url 'login' %}">Login</a></li>
+            </ul>
         {% endif %}
     </div>
 
@@ -114,7 +117,7 @@
         {% if messages %}
             <div id="message-container">
                 {% for message in messages %}
-                    <div class="message">{{ message }}</div>
+                    <div class="message {{ message.tags }}">{{ message }}</div>
                 {% endfor %}
             </div>
         {% endif %}

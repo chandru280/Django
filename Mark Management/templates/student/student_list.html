@@ -80,18 +80,19 @@
 </head>
 <body>
     <h1>Student List</h1>
-    <form method="get" action="{% url 'generate_register_numbers' standard_id %}">
+    {% if standard_id.status == False %}
+    <form method="get" action="{% url 'generate_register_numbers' standard_id.id %}">
         <label for="start_register">Starting Register Number:</label>
         <input type="number" id="start_register" name="start_register" min="1" required>
         
         <button type="submit">Generate Register Numbers</button>
     </form>
-    
+    {% endif %}
     <!-- Search form -->
-    <form class="search-form" method="get" action="{% url 'student_list' standard_id %}">
+    <!-- <form class="search-form" method="get" action="{% url 'student_list' standard_id %}">
         <input type="text" name="query" class="search-input" placeholder="Search by name or email..." value="{{ request.GET.query }}">
         <button type="submit" class="search-button">Search</button>
-    </form>
+    </form> -->
     
     <a href="{% url 'add_student' %}" class="button">Add Student</a>
 

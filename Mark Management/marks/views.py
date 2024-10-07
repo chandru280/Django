@@ -4,8 +4,8 @@ from django.db import IntegrityError
 from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
-from marks.forms import MarkForm, MarkFormupdate, Registrationform, StaffForm, StandardForm, StudentForm, SubjectFormSet, TestSelectionForm, TestnameForm, TestsubjectFormSet, AcademicYearForm
-from marks.models import AcademicYear, Mark, Staff, Standard, Student, Subject, Testname, Testsubject, UserForm
+from marks.forms import *
+from marks.models import *
 
 # from .decorators import admin_required 
 from .decorators import can_add_required, can_update_required, can_delete_required
@@ -268,7 +268,7 @@ def add_student(request):
 def student_list(request, standard_id):
     current_year = request.session.get('selected_academic_year')
     students = Student.objects.filter(academic_year__year=current_year, standard_id=standard_id)
-    standard_id = standard_id
+    standard_id = Standard.objects.get(id=standard_id)
     return render(request, 'student/student_list.html', {'students': students, 'standard_id':standard_id})
 
 
@@ -290,7 +290,8 @@ def generate_register_numbers(request, standard_id):
         for idx, student in enumerate(students, start=start_register):
             student.register_no = f"{idx:04d}"   
             student.save()
-
+        standard.status = True
+        standard.save()
         messages.success(request, "Register numbers have been successfully generated.")
         return redirect('student_list', standard_id=standard_id)
     else:

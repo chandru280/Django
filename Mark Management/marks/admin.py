@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import UserForm, Standard, Subject, Student, Staff, Testsubject, Testname, Mark, AcademicYear
+from .models import *
 
 
 admin.site.register(UserForm)

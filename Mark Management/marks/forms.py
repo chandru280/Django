@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 
-from marks.models import Mark, Staff, Standard, Student, Subject, Testname, Testsubject, UserForm, AcademicYear  
+from marks.models import  *
 from django.forms.models import inlineformset_factory
 
 

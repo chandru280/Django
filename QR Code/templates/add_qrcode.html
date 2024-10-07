@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add QR Code</title>
+</head>
+<body>
+    <h1>Create QR Code</h1>
+
+    <!-- Display form -->
+    <form method="POST">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Generate QR Code</button>
+    </form>
+
+    <!-- Display success message if QR code was generated -->
+    {% if success_message %}
+        <p style="color: green;">{{ success_message }}</p>
+
+        <!-- Display the QR code URL for sharing -->
+        <p>View your QR code: <a href="{{ qrcode_url }}">{{ qrcode_url }}</a></p>
+    {% endif %}
+</body>
+</html>
